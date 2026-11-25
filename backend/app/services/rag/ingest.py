@@ -14,7 +14,6 @@ import json
 import logging
 import os
 from pathlib import Path
-from typing import Optional
 
 logger = logging.getLogger(__name__)
 
@@ -150,7 +149,7 @@ def extract_scheme_texts(schemes_json_path: str) -> list[dict]:
 
 def ingest_directory(
     raw_dir: str,
-    schemes_json_path: Optional[str] = None,
+    schemes_json_path: str | None = None,
     *,
     chunk_size: int = 500,
     chunk_overlap: int = 80,
@@ -172,8 +171,9 @@ def ingest_directory(
         Token overlap between chunks.
     """
     from flask import current_app
-    from app.services.rag.cleaner import clean_text
+
     from app.services.rag.chunker import chunk_text
+    from app.services.rag.cleaner import clean_text
     from app.services.rag.embeddings import embed_chunks
     from app.services.rag.vector_store import VectorStore
 

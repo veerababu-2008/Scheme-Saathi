@@ -1,10 +1,8 @@
 """SchemeSaathi AI — Feedback API tests."""
 
-import pytest
 
-from extensions import db as _db
 from app.models.scheme import Scheme
-from app.models.admin import Feedback
+from extensions import db as _db
 
 
 def _seed_scheme(app, slug="feedback-scheme"):

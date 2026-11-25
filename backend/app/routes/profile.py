@@ -3,10 +3,10 @@
 from flask import Blueprint, request
 from flask_jwt_extended import get_jwt_identity, jwt_required
 
-from extensions import db
 from app.models.user import User, UserProfile
 from app.schemas.profile import ProfileUpdateSchema
 from app.utils import error_response, success_response
+from extensions import db
 
 profile_bp = Blueprint("profile", __name__)
 

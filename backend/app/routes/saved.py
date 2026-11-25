@@ -10,11 +10,11 @@ Endpoints:
 from flask import Blueprint, request
 from flask_jwt_extended import get_jwt_identity, jwt_required
 
-from extensions import db
-from app.models.scheme import Scheme
 from app.models.activity import SavedScheme
-from app.schemas.saved import SaveSchemeSchema, UpdateNotesSchema, SavedListSchema
+from app.models.scheme import Scheme
+from app.schemas.saved import SavedListSchema, SaveSchemeSchema, UpdateNotesSchema
 from app.utils import error_response, paginate_query, success_response
+from extensions import db
 
 saved_bp = Blueprint("saved", __name__)
 

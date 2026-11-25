@@ -1,6 +1,6 @@
 """SchemeSaathi AI — Auth routes (register, login, logout, refresh, password)."""
 
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 from flask import Blueprint, request
 from flask_jwt_extended import (
@@ -14,10 +14,10 @@ from flask_jwt_extended import (
     unset_jwt_cookies,
 )
 
-from extensions import db, limiter
-from app.models.user import User, UserProfile, TokenBlocklist
+from app.models.user import TokenBlocklist, User, UserProfile
 from app.schemas.auth import LoginSchema, PasswordChangeSchema, RegisterSchema
 from app.utils import error_response, success_response
+from extensions import db, limiter
 
 auth_bp = Blueprint("auth", __name__)
 
@@ -100,7 +100,7 @@ def login():
 @jwt_required()
 def logout():
     jti = get_jwt()["jti"]
-    db.session.add(TokenBlocklist(jti=jti, created_at=datetime.now(timezone.utc)))
+    db.session.add(TokenBlocklist(jti=jti, created_at=datetime.now(UTC)))
     db.session.commit()
 
     resp, status = success_response({"message": "Logged out successfully."})

@@ -1,6 +1,6 @@
 """SchemeSaathi AI — User and authentication models."""
 
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 from argon2 import PasswordHasher
 from argon2.exceptions import VerifyMismatchError
@@ -24,13 +24,13 @@ class User(db.Model):
     )  # citizen | admin
     is_active = db.Column(db.Boolean, nullable=False, default=True)
     created_at = db.Column(
-        db.DateTime, nullable=False, default=lambda: datetime.now(timezone.utc)
+        db.DateTime, nullable=False, default=lambda: datetime.now(UTC)
     )
     updated_at = db.Column(
         db.DateTime,
         nullable=False,
-        default=lambda: datetime.now(timezone.utc),
-        onupdate=lambda: datetime.now(timezone.utc),
+        default=lambda: datetime.now(UTC),
+        onupdate=lambda: datetime.now(UTC),
     )
 
     # Relationships
@@ -92,23 +92,23 @@ class UserProfile(db.Model):
     has_bank_account = db.Column(db.Boolean, nullable=True)
     preferred_language = db.Column(db.String(5), nullable=False, default="en")
     created_at = db.Column(
-        db.DateTime, nullable=False, default=lambda: datetime.now(timezone.utc)
+        db.DateTime, nullable=False, default=lambda: datetime.now(UTC)
     )
     updated_at = db.Column(
         db.DateTime,
         nullable=False,
-        default=lambda: datetime.now(timezone.utc),
-        onupdate=lambda: datetime.now(timezone.utc),
+        default=lambda: datetime.now(UTC),
+        onupdate=lambda: datetime.now(UTC),
     )
 
     user = db.relationship("User", back_populates="profile")
 
     # ── Computed profile completion ──
 
-    _PROFILE_FIELDS = [
+    _PROFILE_FIELDS = (
         "full_name", "date_of_birth", "gender", "state", "district",
         "occupation", "education_level", "annual_income", "category",
-    ]
+    )
 
     @property
     def profile_complete_pct(self) -> int:
@@ -123,7 +123,7 @@ class UserProfile(db.Model):
     def age(self):
         if not self.date_of_birth:
             return None
-        today = datetime.now(timezone.utc).date()
+        today = datetime.now(UTC).date()
         dob = self.date_of_birth
         return (
             today.year - dob.year
@@ -169,5 +169,5 @@ class TokenBlocklist(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     jti = db.Column(db.String(36), nullable=False, unique=True, index=True)
     created_at = db.Column(
-        db.DateTime, nullable=False, default=lambda: datetime.now(timezone.utc)
+        db.DateTime, nullable=False, default=lambda: datetime.now(UTC)
     )

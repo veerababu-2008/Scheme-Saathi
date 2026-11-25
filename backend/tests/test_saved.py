@@ -1,10 +1,8 @@
 """SchemeSaathi AI — Saved schemes (bookmarks) API tests."""
 
-import pytest
 
-from extensions import db as _db
 from app.models.scheme import Scheme, SchemeCategory
-from app.models.activity import SavedScheme
+from extensions import db as _db
 
 
 def _seed_scheme(app, slug="test-save-scheme"):

@@ -23,8 +23,8 @@ def _get_model():
     """Return the Gemini embedding model (lazy init)."""
     global _model
     if _model is None:
-        from flask import current_app
         import google.generativeai as genai
+        from flask import current_app
 
         genai.configure(api_key=current_app.config["GEMINI_API_KEY"])
         _model = current_app.config["GEMINI_EMBEDDING_MODEL"]
@@ -63,11 +63,11 @@ def embed_query(query: str) -> list[float]:
 
 
 def embed_chunks(
-    chunks: list["Chunk"],
+    chunks: list[Chunk],
     *,
     batch_size: int = 20,
     delay: float = 0.5,
-) -> list["Chunk"]:
+) -> list[Chunk]:
     """Embed a list of Chunks in batches, respecting rate limits.
 
     Mutates each chunk in-place by setting ``chunk.embedding``.

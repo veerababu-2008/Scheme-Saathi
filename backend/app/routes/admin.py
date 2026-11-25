@@ -18,6 +18,7 @@ Endpoints:
 
 import re
 from functools import wraps
+
 from flask import Blueprint, g, request
 from flask_jwt_extended import (
     create_access_token,
@@ -30,9 +31,8 @@ from flask_jwt_extended import (
 )
 from sqlalchemy import func
 
-from extensions import db
-from app.models.admin import AdminUser, AuditLog, Feedback
 from app.models.activity import EligibilityCheck, SavedScheme
+from app.models.admin import AdminUser, AuditLog, Feedback
 from app.models.scheme import (
     EligibilityRule,
     Scheme,
@@ -50,6 +50,7 @@ from app.schemas.admin import (
     AdminSchemeUpdateSchema,
 )
 from app.utils import error_response, paginate_query, success_response
+from extensions import db
 
 admin_bp = Blueprint("admin", __name__)
 

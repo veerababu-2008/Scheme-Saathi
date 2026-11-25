@@ -9,7 +9,6 @@ from __future__ import annotations
 import json
 import logging
 import os
-from pathlib import Path
 from typing import TYPE_CHECKING
 
 import numpy as np
@@ -33,7 +32,7 @@ class VectorStore:
 
     # ── Add ───────────────────────────────────────────────────────
 
-    def add_chunks(self, chunks: list["Chunk"]) -> int:
+    def add_chunks(self, chunks: list[Chunk]) -> int:
         """Add embedded chunks to the index.
 
         Returns the number of vectors added.
@@ -97,9 +96,8 @@ class VectorStore:
             meta = self.metadata[idx]
 
             # Apply filters
-            if filters:
-                if not all(meta.get(k) == v for k, v in filters.items()):
-                    continue
+            if filters and not all(meta.get(k) == v for k, v in filters.items()):
+                continue
 
             results.append({
                 "text": self.texts[idx],
@@ -131,7 +129,7 @@ class VectorStore:
         )
 
     @classmethod
-    def load(cls, index_path: str, metadata_path: str) -> "VectorStore":
+    def load(cls, index_path: str, metadata_path: str) -> VectorStore:
         """Load a previously saved index."""
         import faiss
 
@@ -155,7 +153,7 @@ class VectorStore:
     @classmethod
     def load_or_create(
         cls, index_path: str, metadata_path: str, dimension: int = 768
-    ) -> "VectorStore":
+    ) -> VectorStore:
         """Load an existing index or create a new empty one."""
         try:
             return cls.load(index_path, metadata_path)

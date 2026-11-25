@@ -9,11 +9,11 @@ Endpoints:
 from flask import Blueprint, request
 from flask_jwt_extended import get_jwt_identity, jwt_required
 
-from extensions import db
-from app.models.scheme import Scheme
 from app.models.admin import Feedback
-from app.schemas.feedback import SubmitFeedbackSchema, FeedbackListSchema
+from app.models.scheme import Scheme
+from app.schemas.feedback import FeedbackListSchema, SubmitFeedbackSchema
 from app.utils import error_response, paginate_query, success_response
+from extensions import db
 
 feedback_bp = Blueprint("feedback", __name__)
 

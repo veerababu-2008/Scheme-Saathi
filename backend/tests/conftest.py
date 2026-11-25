@@ -3,9 +3,8 @@
 import pytest
 
 from app import create_app
+from app.models.scheme import EligibilityRule, Scheme, SchemeCategory, SchemeDocument
 from extensions import db as _db
-from app.models.scheme import Scheme, SchemeCategory, EligibilityRule, SchemeDocument
-
 
 # ── App & DB ─────────────────────────────────────────────────────
 

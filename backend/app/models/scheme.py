@@ -1,9 +1,8 @@
 """SchemeSaathi AI — Scheme-related models."""
 
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 from extensions import db
-
 
 # ── Scheme (master record) ───────────────────────────────────────
 
@@ -36,13 +35,13 @@ class Scheme(db.Model):
     deadline = db.Column(db.Date, nullable=True)
     max_benefit_amount = db.Column(db.Integer, nullable=True)
     created_at = db.Column(
-        db.DateTime, nullable=False, default=lambda: datetime.now(timezone.utc)
+        db.DateTime, nullable=False, default=lambda: datetime.now(UTC)
     )
     updated_at = db.Column(
         db.DateTime,
         nullable=False,
-        default=lambda: datetime.now(timezone.utc),
-        onupdate=lambda: datetime.now(timezone.utc),
+        default=lambda: datetime.now(UTC),
+        onupdate=lambda: datetime.now(UTC),
     )
 
     # Relationships
@@ -160,7 +159,7 @@ class EligibilityRule(db.Model):
     is_active = db.Column(db.Boolean, nullable=False, default=True)
     notes = db.Column(db.Text, nullable=True)
     created_at = db.Column(
-        db.DateTime, nullable=False, default=lambda: datetime.now(timezone.utc)
+        db.DateTime, nullable=False, default=lambda: datetime.now(UTC)
     )
 
     scheme = db.relationship("Scheme", back_populates="eligibility_rules")

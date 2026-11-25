@@ -11,7 +11,7 @@ import json
 import os
 import re
 import time
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
 
@@ -23,7 +23,7 @@ def _tokenize(text: str) -> set[str]:
     return {w for w in words if len(w) > 1}
 
 
-def run_rag_evaluation(dataset_path: str = None, output_report_path: str = None) -> dict:
+def run_rag_evaluation(dataset_path: str | None = None, output_report_path: str | None = None) -> dict:
     """Execute benchmark evaluation across the 40 Q&A dataset."""
     root_dir = Path(__file__).resolve().parents[4]  # d:\SchemeSaathi
     if not dataset_path:
@@ -132,7 +132,7 @@ def run_rag_evaluation(dataset_path: str = None, output_report_path: str = None)
     os.makedirs(os.path.dirname(output_report_path), exist_ok=True)
     report_md = f"""# SchemeSaathi AI — RAG Retrieval & Citation Evaluation Report
 
-**Generated:** {datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S UTC')}  
+**Generated:** {datetime.now(UTC).strftime('%Y-%m-%d %H:%M:%S UTC')}  
 **Evaluation Dataset:** 40 Benchmark Citizen Queries (`data/eval_dataset.json`)  
 **Scope:** Central & State Schemes across English, Telugu, and Hindi  
 

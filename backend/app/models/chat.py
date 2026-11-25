@@ -1,7 +1,7 @@
 """SchemeSaathi AI — Chat / Saathi AI models."""
 
 import uuid
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 from extensions import db
 
@@ -21,13 +21,13 @@ class ChatSession(db.Model):
     title = db.Column(db.String(200), nullable=True)
     language = db.Column(db.String(5), nullable=False, default="en")
     created_at = db.Column(
-        db.DateTime, nullable=False, default=lambda: datetime.now(timezone.utc)
+        db.DateTime, nullable=False, default=lambda: datetime.now(UTC)
     )
     updated_at = db.Column(
         db.DateTime,
         nullable=False,
-        default=lambda: datetime.now(timezone.utc),
-        onupdate=lambda: datetime.now(timezone.utc),
+        default=lambda: datetime.now(UTC),
+        onupdate=lambda: datetime.now(UTC),
     )
 
     user = db.relationship("User", backref="chat_sessions")
@@ -62,7 +62,7 @@ class ChatMessage(db.Model):
     content = db.Column(db.Text, nullable=False)
     citations_json = db.Column(db.JSON, nullable=True)
     created_at = db.Column(
-        db.DateTime, nullable=False, default=lambda: datetime.now(timezone.utc)
+        db.DateTime, nullable=False, default=lambda: datetime.now(UTC)
     )
 
     session = db.relationship("ChatSession", back_populates="messages")

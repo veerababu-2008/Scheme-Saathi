@@ -2,10 +2,10 @@
 
 from flask import Blueprint, request
 
-from extensions import db
 from app.models.scheme import Scheme, SchemeCategory
 from app.schemas.scheme import SchemeQuerySchema, SchemeSearchSchema
 from app.utils import error_response, paginate_query, success_response
+from extensions import db
 
 schemes_bp = Blueprint("schemes", __name__)
 
@@ -57,7 +57,7 @@ def search_schemes():
     q = params["q"]
 
     query = Scheme.query.filter(
-        Scheme.is_active == True,  # noqa: E712
+        Scheme.is_active == True,
         db.or_(
             Scheme.name.ilike(f"%{q}%"),
             Scheme.name_te.ilike(f"%{q}%"),
@@ -95,7 +95,7 @@ def list_categories():
             db.func.count(SchemeCategory.id).label("count"),
         )
         .join(Scheme, SchemeCategory.scheme_id == Scheme.id)
-        .filter(Scheme.is_active == True)  # noqa: E712
+        .filter(Scheme.is_active == True)
         .group_by(SchemeCategory.category)
         .order_by(db.func.count(SchemeCategory.id).desc())
         .all()
@@ -118,7 +118,7 @@ def scheme_stats():
     category_count = (
         db.session.query(SchemeCategory.category)
         .join(Scheme)
-        .filter(Scheme.is_active == True)  # noqa: E712
+        .filter(Scheme.is_active == True)
         .distinct()
         .count()
     )

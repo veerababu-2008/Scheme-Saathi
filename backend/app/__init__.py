@@ -29,7 +29,7 @@ def create_app(config_name=None):
 
 
 def _init_extensions(app):
-    from extensions import db, migrate, jwt, limiter, cors
+    from extensions import cors, db, jwt, limiter, migrate
 
     db.init_app(app)
     migrate.init_app(app, db)
@@ -45,16 +45,16 @@ def _init_extensions(app):
 
 
 def _register_blueprints(app):
+    from app.routes.admin import admin_bp
     from app.routes.auth import auth_bp
-    from app.routes.profile import profile_bp
-    from app.routes.schemes import schemes_bp
-    from app.routes.eligibility import eligibility_bp
     from app.routes.chat import chat_bp
+    from app.routes.checklist import checklist_bp
+    from app.routes.eligibility import eligibility_bp
+    from app.routes.feedback import feedback_bp
+    from app.routes.profile import profile_bp
     from app.routes.recommend import recommend_bp
     from app.routes.saved import saved_bp
-    from app.routes.checklist import checklist_bp
-    from app.routes.feedback import feedback_bp
-    from app.routes.admin import admin_bp
+    from app.routes.schemes import schemes_bp
 
     app.register_blueprint(auth_bp, url_prefix="/api/v1/auth")
     app.register_blueprint(profile_bp, url_prefix="/api/v1/profile")
@@ -131,8 +131,8 @@ def _register_cli(app):
 
 
 def _configure_jwt():
-    from extensions import jwt, db
     from app.models.user import TokenBlocklist
+    from extensions import db, jwt
 
     @jwt.token_in_blocklist_loader
     def check_if_token_revoked(_jwt_header, jwt_payload):

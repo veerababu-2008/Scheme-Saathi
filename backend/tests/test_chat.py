@@ -4,12 +4,9 @@ Tests the chat session CRUD and message flow.
 Gemini API calls are mocked to avoid real API usage in tests.
 """
 
-import pytest
-from unittest.mock import patch, MagicMock
+from unittest.mock import patch
 
-from app.models.chat import ChatSession, ChatMessage
-from extensions import db as _db
-
+from app.models.chat import ChatMessage
 
 # ── Helper: standard mock answer ─────────────────────────────────
 

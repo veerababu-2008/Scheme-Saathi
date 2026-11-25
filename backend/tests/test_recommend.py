@@ -4,30 +4,27 @@ Tests the scorer (component scores, ranking, reasons), weights,
 and API endpoints.
 """
 
-import pytest
-from datetime import datetime, timezone, timedelta
+from datetime import UTC, datetime, timedelta
 
-from extensions import db as _db
-from app.models.scheme import Scheme, SchemeCategory, EligibilityRule
-from app.models.user import UserProfile
+from app.models.scheme import EligibilityRule, Scheme, SchemeCategory
 from app.services.recommendation.scorer import (
-    score_scheme,
-    rank_schemes,
-    _profile_score,
-    _category_score,
-    _location_score,
-    _freshness_score,
     _benefit_score,
     _build_user_categories,
+    _category_score,
+    _freshness_score,
+    _location_score,
+    _profile_score,
+    rank_schemes,
+    score_scheme,
 )
 from app.services.recommendation.weights import (
-    W_PROFILE,
-    W_CATEGORY,
-    W_LOCATION,
-    W_FRESHNESS,
     W_BENEFIT,
+    W_CATEGORY,
+    W_FRESHNESS,
+    W_LOCATION,
+    W_PROFILE,
 )
-
+from extensions import db as _db
 
 # ══════════════════════════════════════════════════════════════════
 # WEIGHT TESTS
@@ -91,7 +88,7 @@ class TestProfileScore:
 
     def test_no_rules(self):
         result = {"status": "green", "met": [], "not_met": [], "missing": []}
-        score, reason = _profile_score(result)
+        score, _reason = _profile_score(result)
         assert score == 1.0
 
 
@@ -104,7 +101,7 @@ class TestCategoryScore:
         assert "agriculture" in reason.lower()
 
     def test_no_overlap(self):
-        score, reason = _category_score(["housing"], {"education", "employment"})
+        score, _reason = _category_score(["housing"], {"education", "employment"})
         assert score <= 0.3
 
     def test_empty_scheme_categories(self):
@@ -113,11 +110,11 @@ class TestCategoryScore:
         assert "general" in reason.lower()
 
     def test_empty_user_categories(self):
-        score, reason = _category_score(["health"], set())
+        score, _reason = _category_score(["health"], set())
         assert score == 0.3
 
     def test_partial_overlap(self):
-        score, reason = _category_score(
+        score, _reason = _category_score(
             ["agriculture", "employment"], {"agriculture", "education"}
         )
         assert score >= 0.5
@@ -132,7 +129,7 @@ class TestLocationScore:
         assert "nationwide" in reason.lower()
 
     def test_matching_state(self):
-        score, reason = _location_score("state", "Telangana", "Telangana")
+        score, _reason = _location_score("state", "Telangana", "Telangana")
         assert score == 1.0
 
     def test_different_state(self):
@@ -154,19 +151,19 @@ class TestFreshnessScore:
     """Tests for verification recency scoring."""
 
     def test_verified_today(self):
-        score, reason = _freshness_score(datetime.now(timezone.utc))
+        score, reason = _freshness_score(datetime.now(UTC))
         assert score == 1.0
         assert "today" in reason.lower()
 
     def test_verified_recently(self):
-        recent = datetime.now(timezone.utc) - timedelta(days=15)
+        recent = datetime.now(UTC) - timedelta(days=15)
         score, reason = _freshness_score(recent)
         assert score > 0.9
         assert "recently" in reason.lower()
 
     def test_verified_long_ago(self):
-        old = datetime.now(timezone.utc) - timedelta(days=400)
-        score, reason = _freshness_score(old)
+        old = datetime.now(UTC) - timedelta(days=400)
+        score, _reason = _freshness_score(old)
         assert score <= 0.3
 
     def test_no_verification_date(self):
@@ -194,7 +191,7 @@ class TestBenefitScore:
         assert "₹" in reason
 
     def test_low_benefit(self):
-        score, reason = _benefit_score(1600)
+        score, _reason = _benefit_score(1600)
         assert 0.0 < score < 0.1
 
     def test_no_benefit_amount(self):

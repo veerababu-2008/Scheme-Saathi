@@ -1,6 +1,6 @@
 """SchemeSaathi AI — User activity models."""
 
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 from extensions import db
 
@@ -17,7 +17,7 @@ class SavedScheme(db.Model):
     )
     notes = db.Column(db.Text, nullable=True)
     saved_at = db.Column(
-        db.DateTime, nullable=False, default=lambda: datetime.now(timezone.utc)
+        db.DateTime, nullable=False, default=lambda: datetime.now(UTC)
     )
 
     user = db.relationship("User", backref="saved_schemes")
@@ -47,7 +47,7 @@ class RecentlyViewed(db.Model):
         db.Integer, db.ForeignKey("schemes.id", ondelete="CASCADE"), nullable=False
     )
     viewed_at = db.Column(
-        db.DateTime, nullable=False, default=lambda: datetime.now(timezone.utc)
+        db.DateTime, nullable=False, default=lambda: datetime.now(UTC)
     )
 
     user = db.relationship("User", backref="recently_viewed")
@@ -68,7 +68,7 @@ class EligibilityCheck(db.Model):
     status = db.Column(db.String(10), nullable=False)  # green | amber | red
     result_json = db.Column(db.JSON, nullable=True)
     checked_at = db.Column(
-        db.DateTime, nullable=False, default=lambda: datetime.now(timezone.utc)
+        db.DateTime, nullable=False, default=lambda: datetime.now(UTC)
     )
 
     user = db.relationship("User", backref="eligibility_checks")
@@ -104,8 +104,8 @@ class ChecklistProgress(db.Model):
     updated_at = db.Column(
         db.DateTime,
         nullable=False,
-        default=lambda: datetime.now(timezone.utc),
-        onupdate=lambda: datetime.now(timezone.utc),
+        default=lambda: datetime.now(UTC),
+        onupdate=lambda: datetime.now(UTC),
     )
 
     user = db.relationship("User", backref="checklist_progress")

@@ -1,6 +1,6 @@
 """SchemeSaathi AI — Admin, audit, and feedback models."""
 
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 from argon2 import PasswordHasher
 from argon2.exceptions import VerifyMismatchError
@@ -22,7 +22,7 @@ class AdminUser(db.Model):
     )  # super | editor | viewer
     is_active = db.Column(db.Boolean, nullable=False, default=True)
     created_at = db.Column(
-        db.DateTime, nullable=False, default=lambda: datetime.now(timezone.utc)
+        db.DateTime, nullable=False, default=lambda: datetime.now(UTC)
     )
 
     audit_logs = db.relationship("AuditLog", back_populates="admin")
@@ -60,7 +60,7 @@ class AuditLog(db.Model):
     diff_json = db.Column(db.JSON, nullable=True)
     ip_address = db.Column(db.String(45), nullable=True)
     created_at = db.Column(
-        db.DateTime, nullable=False, default=lambda: datetime.now(timezone.utc),
+        db.DateTime, nullable=False, default=lambda: datetime.now(UTC),
         index=True,
     )
 
@@ -96,7 +96,7 @@ class Feedback(db.Model):
         db.String(20), nullable=False, default="open"
     )  # open | reviewed | done
     created_at = db.Column(
-        db.DateTime, nullable=False, default=lambda: datetime.now(timezone.utc)
+        db.DateTime, nullable=False, default=lambda: datetime.now(UTC)
     )
 
     user = db.relationship("User", backref="feedback")

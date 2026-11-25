@@ -1,10 +1,9 @@
 """SchemeSaathi AI — Admin routes and RBAC test suite."""
 
 import pytest
+
+from app.models.admin import AdminUser
 from extensions import db
-from app.models.admin import AdminUser, AuditLog, Feedback
-from app.models.activity import EligibilityCheck
-from app.models.scheme import Scheme, EligibilityRule
 
 
 @pytest.fixture()

@@ -9,10 +9,9 @@ Tests are organised in four groups:
 
 import pytest
 
-from app.services.eligibility.operators import evaluate_operator
 from app.services.eligibility.engine import check_eligibility
 from app.services.eligibility.explain import build_explanation, explain_leaf
-
+from app.services.eligibility.operators import evaluate_operator
 
 # ═══════════════════════════════════════════════════════════════════
 # 1. OPERATORS (19 tests)
@@ -519,10 +518,37 @@ class TestEligibilityAPI:
     def test_check_scheme_stores_result(self, user_with_profile, seeded_schemes, app):
         """Verify the check is persisted to the database."""
         with app.app_context():
-            from app.models.scheme import Scheme
             from app.models.activity import EligibilityCheck
+            from app.models.scheme import Scheme
             scheme = Scheme.query.filter_by(slug="test-health").first()
             user_with_profile.post(f"/api/v1/eligibility/check/{scheme.id}")
             checks = EligibilityCheck.query.filter_by(scheme_id=scheme.id).all()
             assert len(checks) >= 1
             assert checks[0].status in ("green", "amber", "red")
+
+    def test_evaluate_endpoint_guest(self, client, seeded_schemes, app):
+        """Verify anonymous/guest evaluation works without login."""
+        with app.app_context():
+            from app.models.scheme import Scheme
+            scheme = Scheme.query.filter_by(slug="test-education").first()
+            scheme_id = scheme.id
+
+        resp = client.post(
+            "/api/v1/eligibility/evaluate",
+            json={
+                "scheme_id": scheme_id,
+                "profile": {"age": 10, "gender": "female"},
+            },
+        )
+        assert resp.status_code == 200
+        body = resp.get_json()
+        assert "status" in body["data"]
+        assert "breakdown" in body["data"]
+        assert isinstance(body["data"]["breakdown"], list)
+
+    def test_evaluate_endpoint_missing_scheme_id(self, client):
+        resp = client.post(
+            "/api/v1/eligibility/evaluate",
+            json={"profile": {"age": 25}},
+        )
+        assert resp.status_code == 400

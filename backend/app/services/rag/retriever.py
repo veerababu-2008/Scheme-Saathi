@@ -7,7 +7,6 @@ filters to return the top-k most relevant chunks for a user query.
 from __future__ import annotations
 
 import logging
-from typing import Optional
 
 logger = logging.getLogger(__name__)
 
@@ -20,6 +19,7 @@ def _get_store():
     global _store
     if _store is None:
         from flask import current_app
+
         from app.services.rag.vector_store import VectorStore
 
         idx_path = current_app.config["FAISS_INDEX_PATH"]
@@ -37,9 +37,9 @@ def reset_store() -> None:
 def retrieve(
     query: str,
     *,
-    top_k: Optional[int] = None,
-    language: Optional[str] = None,
-    scheme_id: Optional[int] = None,
+    top_k: int | None = None,
+    language: str | None = None,
+    scheme_id: int | None = None,
 ) -> list[dict]:
     """Retrieve the most relevant chunks for *query*.
 
@@ -60,6 +60,7 @@ def retrieve(
         Each dict has keys: ``text``, ``metadata``, ``score``.
     """
     from flask import current_app
+
     from app.services.rag.embeddings import embed_query
 
     if top_k is None:

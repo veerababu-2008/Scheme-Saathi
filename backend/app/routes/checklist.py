@@ -11,11 +11,11 @@ Endpoints:
 from flask import Blueprint, request
 from flask_jwt_extended import get_jwt_identity, jwt_required
 
-from extensions import db
-from app.models.scheme import Scheme, SchemeDocument
 from app.models.activity import ChecklistProgress
+from app.models.scheme import Scheme, SchemeDocument
 from app.schemas.checklist import UpdateChecklistSchema
 from app.utils import error_response, success_response
+from extensions import db
 
 checklist_bp = Blueprint("checklist", __name__)
 
@@ -68,7 +68,7 @@ def get_checklist(scheme_id):
         "scheme_name": scheme.name,
         "total_documents": total,
         "collected_count": collected,
-        "completion_pct": int((collected / total * 100)) if total else 100,
+        "completion_pct": int(collected / total * 100) if total else 100,
         "documents": items,
     })
 
@@ -136,7 +136,7 @@ def checklist_summary():
 
     progresses = ChecklistProgress.query.filter_by(user_id=user_id).all()
 
-    scheme_ids = set(p.scheme_id for p in progresses)
+    scheme_ids = {p.scheme_id for p in progresses}
     schemes_summary = []
 
     for sid in scheme_ids:
@@ -156,7 +156,7 @@ def checklist_summary():
             "scheme_slug": scheme.slug,
             "total_documents": total_docs,
             "collected_count": collected,
-            "completion_pct": int((collected / total_docs * 100)) if total_docs else 100,
+            "completion_pct": int(collected / total_docs * 100) if total_docs else 100,
         })
 
     schemes_summary.sort(key=lambda s: s["completion_pct"], reverse=True)

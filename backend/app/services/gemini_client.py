@@ -13,7 +13,6 @@ from __future__ import annotations
 
 import logging
 import re
-from typing import Optional
 
 logger = logging.getLogger(__name__)
 
@@ -43,8 +42,8 @@ def _get_model():
     """Lazy-initialise the Gemini generative model."""
     global _model_instance
     if _model_instance is None:
-        from flask import current_app
         import google.generativeai as genai
+        from flask import current_app
 
         api_key = current_app.config["GEMINI_API_KEY"]
         if not api_key:
@@ -70,7 +69,7 @@ def generate_chat_response(
     messages: list[dict],
     system_prompt: str,
     *,
-    temperature: Optional[float] = None,
+    temperature: float | None = None,
 ) -> str:
     """Send messages to Gemini and return the response text.
 
@@ -117,4 +116,3 @@ def generate_chat_response(
 
 class GeminiError(Exception):
     """Raised when the Gemini API returns an error."""
-    pass

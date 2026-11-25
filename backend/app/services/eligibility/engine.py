@@ -25,7 +25,6 @@ RED    "Not Eligible Based on Provided Details"  top-level FALSE with ≥1 manda
 
 from app.services.eligibility.operators import evaluate_operator
 
-
 # ── Result constants ─────────────────────────────────────────────
 
 TRUE = "TRUE"

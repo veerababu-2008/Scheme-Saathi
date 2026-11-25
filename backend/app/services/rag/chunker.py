@@ -8,9 +8,7 @@ metadata for later retrieval filtering and citation.
 from __future__ import annotations
 
 import re
-from dataclasses import dataclass, field, asdict
-from typing import Optional
-
+from dataclasses import asdict, dataclass, field
 
 # ── Chunk data class ─────────────────────────────────────────────
 
@@ -21,12 +19,12 @@ class Chunk:
 
     text: str
     chunk_index: int
-    scheme_id: Optional[int] = None
-    source_url: Optional[str] = None
-    source_title: Optional[str] = None
-    page: Optional[int] = None
+    scheme_id: int | None = None
+    source_url: str | None = None
+    source_title: str | None = None
+    page: int | None = None
     language: str = "en"
-    verified_date: Optional[str] = None
+    verified_date: str | None = None
     doc_type: str = "unknown"          # pdf | html | json
 
     # Set after embedding

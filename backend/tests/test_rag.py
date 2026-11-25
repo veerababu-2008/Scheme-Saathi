@@ -4,29 +4,27 @@ Tests the cleaner, chunker, prompt builder, validator, and vector store
 without requiring the Gemini API (mocked where needed).
 """
 
-import pytest
 import numpy as np
 
+from app.services.rag.chunker import Chunk, _approx_tokens, chunk_text
 from app.services.rag.cleaner import (
     clean_text,
-    normalise_unicode,
     collapse_whitespace,
-    remove_boilerplate,
     normalise_rupee,
+    normalise_unicode,
+    remove_boilerplate,
 )
-from app.services.rag.chunker import chunk_text, Chunk, _approx_tokens
 from app.services.rag.prompt import (
-    detect_language,
+    SYSTEM_PROMPT,
     build_context_block,
     build_messages,
+    detect_language,
     extract_citations,
-    SYSTEM_PROMPT,
 )
 from app.services.rag.validator import (
-    validate_response,
     build_fallback_response,
+    validate_response,
 )
-
 
 # ══════════════════════════════════════════════════════════════════
 # CLEANER TESTS
@@ -461,6 +459,7 @@ class TestIngestExtraction:
 
     def test_extract_scheme_texts(self, tmp_path):
         import json
+
         from app.services.rag.ingest import extract_scheme_texts
 
         schemes = [
@@ -508,6 +507,7 @@ class TestIngestExtraction:
 
     def test_extract_scheme_texts_no_translations(self, tmp_path):
         import json
+
         from app.services.rag.ingest import extract_scheme_texts
 
         schemes = [

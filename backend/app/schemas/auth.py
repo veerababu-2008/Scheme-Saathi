@@ -1,6 +1,6 @@
 """SchemeSaathi AI — Auth validation schemas."""
 
-from marshmallow import Schema, fields, validate, validates, ValidationError
+from marshmallow import Schema, ValidationError, fields, validate
 
 
 def _check_password_strength(value):

@@ -9,8 +9,8 @@ Checks that generated answers meet quality and safety requirements:
 
 from __future__ import annotations
 
-import re
 import logging
+import re
 
 logger = logging.getLogger(__name__)
 

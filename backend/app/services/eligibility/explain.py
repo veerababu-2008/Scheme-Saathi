@@ -98,9 +98,9 @@ def build_explanation(check_result):
 
     if status == "green":
         summary = (
-            f"Based on the information you provided, you appear to be "
-            f"potentially eligible for this scheme. This is not a guarantee — "
-            f"please verify with the official department."
+            "Based on the information you provided, you appear to be "
+            "potentially eligible for this scheme. This is not a guarantee — "
+            "please verify with the official department."
         )
     elif status == "amber":
         n_missing = len(check_result["missing"])

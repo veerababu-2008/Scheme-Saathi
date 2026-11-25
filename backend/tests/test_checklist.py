@@ -1,10 +1,8 @@
 """SchemeSaathi AI — Document checklist API tests."""
 
-import pytest
 
+from app.models.scheme import Scheme, SchemeDocument
 from extensions import db as _db
-from app.models.scheme import Scheme, SchemeCategory, SchemeDocument
-from app.models.activity import ChecklistProgress
 
 
 def _seed_scheme_with_docs(app, slug="checklist-scheme"):
@@ -46,7 +44,7 @@ class TestGetChecklist:
     """Tests for GET /checklist/<scheme_id>."""
 
     def test_get_checklist(self, auth_client, app):
-        sid, doc_ids = _seed_scheme_with_docs(app)
+        sid, _doc_ids = _seed_scheme_with_docs(app)
         resp = auth_client.get(f"/api/v1/checklist/{sid}")
         assert resp.status_code == 200
         data = resp.get_json()["data"]

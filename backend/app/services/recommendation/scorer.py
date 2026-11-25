@@ -10,30 +10,27 @@ in [0.0, 1.0]; the final score is a weighted sum.
 
 from __future__ import annotations
 
-from datetime import datetime, timezone
-from typing import Optional
+from datetime import UTC, datetime
 
 from app.services.eligibility.engine import (
-    build_profile_dict,
-    check_eligibility,
-    STATUS_GREEN,
     STATUS_AMBER,
+    STATUS_GREEN,
     STATUS_RED,
+    check_eligibility,
 )
 from app.services.recommendation.weights import (
-    W_PROFILE,
-    W_CATEGORY,
-    W_LOCATION,
-    W_FRESHNESS,
-    W_BENEFIT,
-    OCCUPATION_CATEGORIES,
+    BENEFIT_CAP,
     CATEGORY_FROM_PROFILE,
     EDUCATION_CATEGORIES,
     FRESHNESS_DECAY_DAYS,
     FRESHNESS_MIN_SCORE,
-    BENEFIT_CAP,
+    OCCUPATION_CATEGORIES,
+    W_BENEFIT,
+    W_CATEGORY,
+    W_FRESHNESS,
+    W_LOCATION,
+    W_PROFILE,
 )
-
 
 # ── Component scorers ────────────────────────────────────────────
 
@@ -90,8 +87,8 @@ def _category_score(
 
 def _location_score(
     scheme_level: str,
-    scheme_state: Optional[str],
-    user_state: Optional[str],
+    scheme_state: str | None,
+    user_state: str | None,
 ) -> tuple[float, str]:
     """Score based on geographic relevance.
 
@@ -113,7 +110,7 @@ def _location_score(
 
 
 def _freshness_score(
-    last_verified_at: Optional[datetime],
+    last_verified_at: datetime | None,
 ) -> tuple[float, str]:
     """Score based on recency of verification.
 
@@ -122,9 +119,9 @@ def _freshness_score(
     if not last_verified_at:
         return FRESHNESS_MIN_SCORE, "Verification date pending"
 
-    now = datetime.now(timezone.utc)
+    now = datetime.now(UTC)
     if last_verified_at.tzinfo is None:
-        last_verified_at = last_verified_at.replace(tzinfo=timezone.utc)
+        last_verified_at = last_verified_at.replace(tzinfo=UTC)
 
     days_ago = (now - last_verified_at).days
     if days_ago <= 0:
@@ -143,7 +140,7 @@ def _freshness_score(
 
 
 def _benefit_score(
-    max_benefit_amount: Optional[int],
+    max_benefit_amount: int | None,
 ) -> tuple[float, str]:
     """Score based on benefit amount.
 
@@ -153,9 +150,7 @@ def _benefit_score(
         return 0.5, "Benefit amount varies"
 
     score = min(1.0, max_benefit_amount / BENEFIT_CAP)
-    if max_benefit_amount >= 100000:
-        return score, f"Up to ₹{max_benefit_amount:,}"
-    elif max_benefit_amount >= 10000:
+    if max_benefit_amount >= 100000 or max_benefit_amount >= 10000:
         return score, f"Up to ₹{max_benefit_amount:,}"
     else:
         return score, f"₹{max_benefit_amount:,} benefit"
@@ -269,7 +264,7 @@ def rank_schemes(
     profile_data: dict,
     *,
     exclude_red: bool = False,
-    limit: Optional[int] = None,
+    limit: int | None = None,
 ) -> list[dict]:
     """Score and rank a list of schemes for a user.
 

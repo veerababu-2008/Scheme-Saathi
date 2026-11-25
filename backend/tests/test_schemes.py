@@ -45,9 +45,8 @@ class TestListSchemes:
 
     def test_list_empty_result(self, client, seeded_schemes):
         resp = client.get("/api/v1/schemes/?level=central&category=agriculture")
-        body = resp.get_json()
-        # We have no central agriculture scheme in test data
         assert resp.status_code == 200
+        assert resp.get_json()["data"] == []
 
     def test_list_invalid_level(self, client):
         resp = client.get("/api/v1/schemes/?level=invalid")

@@ -8,13 +8,13 @@ Endpoints:
 from flask import Blueprint, request
 from flask_jwt_extended import get_jwt_identity, jwt_required
 
-from extensions import db
-from app.models.user import User
 from app.models.scheme import Scheme, SchemeCategory
+from app.models.user import User
 from app.schemas.recommend import RecommendQuerySchema
 from app.services.eligibility.engine import build_profile_dict
 from app.services.recommendation.scorer import rank_schemes, score_scheme
 from app.utils import error_response, success_response
+from extensions import db
 
 recommend_bp = Blueprint("recommend", __name__)
 

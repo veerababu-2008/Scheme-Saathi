@@ -11,15 +11,14 @@ Endpoints:
 from flask import Blueprint, request
 from flask_jwt_extended import get_jwt_identity, jwt_required
 
-from extensions import db
-from app.models.user import User
-from app.models.chat import ChatSession, ChatMessage
+from app.models.chat import ChatMessage, ChatSession
 from app.schemas.chat import (
     CreateSessionSchema,
     SendMessageSchema,
     SessionListSchema,
 )
 from app.utils import error_response, paginate_query, success_response
+from extensions import db
 
 chat_bp = Blueprint("chat", __name__)
 
@@ -125,25 +124,17 @@ def send_message(session_id):
 
     language = data.get("language") or detect_language(user_message_text) or session.language
 
-    # 1. Persist user message
-    user_msg = ChatMessage(
-        session_id=session.id,
-        role="user",
-        content=user_message_text,
-    )
-    db.session.add(user_msg)
-
-    # 2. Retrieve context from RAG
-    from app.services.rag.retriever import retrieve
+    # 1. Retrieve context from RAG
     from app.services.rag.prompt import (
-        SYSTEM_PROMPT,
         DISCLAIMER_TEXT,
+        SYSTEM_PROMPT,
         build_messages,
         extract_citations,
     )
+    from app.services.rag.retriever import retrieve
     from app.services.rag.validator import (
-        validate_response,
         build_fallback_response,
+        validate_response,
     )
 
     context_chunks = retrieve(
@@ -151,11 +142,20 @@ def send_message(session_id):
         language=language if language != "en" else None,
     )
 
-    # 3. Build chat history from existing messages
+    # 2. Build chat history from existing persisted messages BEFORE adding current turn
     history = [
         {"role": m.role, "content": m.content}
         for m in session.messages
+        if m.id is not None
     ]
+
+    # 3. Persist user message
+    user_msg = ChatMessage(
+        session_id=session.id,
+        role="user",
+        content=user_message_text,
+    )
+    db.session.add(user_msg)
 
     # 4. Build prompt and call Gemini
     messages = build_messages(user_message_text, context_chunks, history)
@@ -164,7 +164,7 @@ def send_message(session_id):
         from app.services.gemini_client import generate_chat_response
 
         answer = generate_chat_response(messages, SYSTEM_PROMPT)
-    except Exception as e:
+    except Exception:  # noqa: BLE001
         answer = build_fallback_response(language)
 
     # 5. Validate response
@@ -186,7 +186,7 @@ def send_message(session_id):
     db.session.add(assistant_msg)
 
     # 7. Update session title if it's the first message
-    if len(session.messages) <= 1:
+    if len(history) == 0:
         session.title = user_message_text[:100]
 
     db.session.commit()
@@ -194,6 +194,8 @@ def send_message(session_id):
     return success_response({
         "user_message": user_msg.to_dict(),
         "assistant_message": assistant_msg.to_dict(),
+        "content": assistant_msg.content,
+        "citations": citations,
         "language_detected": language,
     })
 

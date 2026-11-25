@@ -357,7 +357,10 @@
           });
 
           typingEl.remove();
-          appendMessage('assistant', res.data.content, res.data.sources_json);
+          const assistantMsg = res.data.assistant_message || res.data;
+          const replyContent = assistantMsg.content || res.data.content || 'Response received.';
+          const citations = assistantMsg.citations || assistantMsg.citations_json || res.data.citations || [];
+          appendMessage('assistant', replyContent, citations);
         } catch (err) {
           typingEl.remove();
           appendMessage('assistant', 'Sorry, I encountered an issue processing your request. Please ensure the backend is running with Gemini configured.');
