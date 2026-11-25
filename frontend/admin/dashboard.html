@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard — SchemeSaathi AI</title>
+  <link rel="stylesheet" href="/assets/css/tokens.css">
+  <link rel="stylesheet" href="/assets/css/base.css">
+  <link rel="stylesheet" href="/assets/css/components.css">
+  <link rel="stylesheet" href="/assets/css/navbar.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400..700;1,9..40,400..700&family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Manrope:wght@400..800&display=swap" rel="stylesheet">
+  <style>
+    .admin-header {
+      background: var(--aubergine-900);
+      color: #fff;
+      padding: 1rem 0;
+    }
+    .kpi-card {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+    }
+    .kpi-value {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--color-heading);
+      margin-top: 0.25rem;
+    }
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: var(--text-sm);
+    }
+    .data-table th, .data-table td {
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid var(--color-border);
+      text-align: left;
+    }
+    .data-table th {
+      background: var(--parchment-50);
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <header class="admin-header">
+    <div class="container flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <span style="font-size: 1.25rem;">🛡️</span>
+        <div>
+          <strong style="font-size: 1.1rem; color: #fff;">SchemeSaathi AI — Admin Governance</strong>
+          <span id="admin-role-badge" class="badge" style="background: rgba(255,255,255,0.2); color: #fff; margin-left: 0.5rem;">SUPER</span>
+        </div>
+      </div>
+      <div class="flex items-center gap-3">
+        <a href="/index.html" class="btn btn-subtle btn-sm" style="color: #CABDD0;">Citizen Site ↗</a>
+        <button onclick="window.auth.adminLogout()" class="btn btn-secondary btn-sm">Sign Out</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container" style="padding: 2.5rem 1.5rem 5rem;">
+    <!-- KPI Analytics Cards -->
+    <section class="grid grid-cols-1 grid-cols-4 gap-4" style="margin-bottom: 2.5rem;">
+      <div class="kpi-card">
+        <div class="text-xs font-semibold text-muted">TOTAL SCHEMES</div>
+        <div id="kpi-schemes" class="kpi-value">--</div>
+      </div>
+      <div class="kpi-card">
+        <div class="text-xs font-semibold text-muted">REGISTERED CITIZENS</div>
+        <div id="kpi-users" class="kpi-value">--</div>
+      </div>
+      <div class="kpi-card">
+        <div class="text-xs font-semibold text-muted">ELIGIBILITY CHECKS RUN</div>
+        <div id="kpi-checks" class="kpi-value">--</div>
+      </div>
+      <div class="kpi-card">
+        <div class="text-xs font-semibold text-muted">CITIZEN FEEDBACK / REPORTS</div>
+        <div id="kpi-feedback" class="kpi-value">--</div>
+      </div>
+    </section>
+
+    <!-- Schemes Management -->
+    <section class="card" style="margin-bottom: 2.5rem;">
+      <div class="flex items-center justify-between" style="margin-bottom: 1.25rem;">
+        <h2 style="font-size: 1.35rem;">Welfare Schemes Directory</h2>
+        <span class="text-xs text-muted">Showing all active database records</span>
+      </div>
+
+      <div style="overflow-x: auto;">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Scheme Name</th>
+              <th>Level</th>
+              <th>Verification Tier</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="schemes-table-body">
+            <tr><td colspan="6" class="text-center text-muted">Loading schemes...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Feedback Triage & Audit Trail -->
+    <div class="grid grid-cols-1 grid-cols-2 gap-6">
+      <!-- Feedback Queue -->
+      <section class="card">
+        <h3 style="font-size: 1.2rem; margin-bottom: 1rem;">Citizen Feedback & Reports</h3>
+        <div id="feedback-queue-list">
+          <p class="text-xs text-muted">Loading feedback entries...</p>
+        </div>
+      </section>
+
+      <!-- Audit Trail -->
+      <section class="card">
+        <h3 style="font-size: 1.2rem; margin-bottom: 1rem;">System Audit Trail</h3>
+        <div id="audit-trail-list">
+          <p class="text-xs text-muted">Loading audit log...</p>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <script src="/assets/js/api.js"></script>
+  <script src="/assets/js/auth.js"></script>
+  <script src="/assets/js/components.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      window.auth.requireAdmin();
+
+      const admin = window.auth.getAdmin();
+      if (admin) {
+        document.getElementById('admin-role-badge').textContent = (admin.role || 'ADMIN').toUpperCase();
+      }
+
+      // 1. Load Analytics KPIs
+      try {
+        const res = await window.api.get('/admin/analytics');
+        const d = res.data;
+        document.getElementById('kpi-schemes').textContent = d.schemes.total || 0;
+        document.getElementById('kpi-users').textContent = d.citizens.total_users || 0;
+        document.getElementById('kpi-checks').textContent = d.eligibility.total_checks || 0;
+        document.getElementById('kpi-feedback').textContent = d.feedback.total || 0;
+      } catch (err) {}
+
+      // 2. Load Schemes Table
+      loadAdminSchemes();
+
+      // 3. Load Feedback
+      try {
+        const fbRes = await window.api.get('/admin/feedback?per_page=5');
+        const fbItems = fbRes.data || [];
+        const fbContainer = document.getElementById('feedback-queue-list');
+        if (fbItems.length === 0) {
+          fbContainer.innerHTML = '<p class="text-xs text-muted">No open citizen feedback reports.</p>';
+        } else {
+          fbContainer.innerHTML = fbItems.map(f => `
+            <div style="padding: 0.75rem 0; border-bottom: 1px solid var(--color-border); font-size: 0.85rem;">
+              <div class="flex items-center justify-between" style="margin-bottom: 0.25rem;">
+                <span class="badge badge-amber" style="font-size: 0.65rem;">${f.type.toUpperCase()}</span>
+                <span class="text-xs text-muted">${f.status}</span>
+              </div>
+              <p style="margin-bottom: 0.4rem;">${f.message}</p>
+              ${f.status === 'open' ? `<button onclick="markFeedbackDone(${f.id})" class="btn btn-secondary btn-sm" style="font-size: 0.7rem; padding: 0.2rem 0.5rem;">Mark Reviewed</button>` : ''}
+            </div>
+          `).join('');
+        }
+      } catch (err) {}
+
+      // 4. Load Audit Logs
+      try {
+        const auditRes = await window.api.get('/admin/audit-logs?per_page=5');
+        const logs = auditRes.data || [];
+        const auditContainer = document.getElementById('audit-trail-list');
+        if (logs.length === 0) {
+          auditContainer.innerHTML = '<p class="text-xs text-muted">No audit events recorded.</p>';
+        } else {
+          auditContainer.innerHTML = logs.map(l => `
+            <div style="padding: 0.6rem 0; border-bottom: 1px dashed var(--color-border); font-size: 0.8rem;">
+              <strong>${l.action}</strong> on <code>${l.entity_type}</code> #${l.entity_id || ''}
+              <div class="text-xs text-muted">${l.created_at || 'Just now'}</div>
+            </div>
+          `).join('');
+        }
+      } catch (err) {}
+    });
+
+    async function loadAdminSchemes() {
+      try {
+        const res = await window.api.get('/admin/schemes?per_page=50');
+        const schemes = res.data || [];
+        const tbody = document.getElementById('schemes-table-body');
+        if (schemes.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted">No schemes in database.</td></tr>';
+          return;
+        }
+
+        tbody.innerHTML = schemes.map(s => `
+          <tr>
+            <td>#${s.id}</td>
+            <td><strong>${s.name}</strong></td>
+            <td><span class="badge badge-pending">${s.level.toUpperCase()}</span></td>
+            <td>
+              <select onchange="updateSchemeVerification(${s.id}, this.value)" class="form-select text-xs" style="padding: 0.25rem 0.5rem; width: auto;">
+                <option value="demo" ${s.verification_status === 'demo' ? 'selected' : ''}>Demo</option>
+                <option value="pending" ${s.verification_status === 'pending' ? 'selected' : ''}>Pending</option>
+                <option value="verified" ${s.verification_status === 'verified' ? 'selected' : ''}>Verified</option>
+              </select>
+            </td>
+            <td>${s.is_active ? '<span class="badge badge-green">Active</span>' : '<span class="badge badge-red">Inactive</span>'}</td>
+            <td>
+              <a href="/scheme.html?slug=${s.slug}" target="_blank" class="btn btn-secondary btn-sm" style="font-size: 0.72rem; padding: 0.25rem 0.5rem;">Preview</a>
+            </td>
+          </tr>
+        `).join('');
+      } catch (err) {}
+    }
+
+    async function updateSchemeVerification(schemeId, status) {
+      try {
+        await window.api.put(`/admin/schemes/${schemeId}`, { verification_status: status });
+        window.showToast(`Scheme #${schemeId} status updated to ${status}.`, 'success');
+      } catch (err) {}
+    }
+
+    async function markFeedbackDone(feedbackId) {
+      try {
+        await window.api.patch(`/admin/feedback/${feedbackId}`, { status: 'done' });
+        window.showToast('Feedback marked as resolved.', 'success');
+        setTimeout(() => window.location.reload(), 500);
+      } catch (err) {}
+    }
+  </script>
+</body>
+</html>

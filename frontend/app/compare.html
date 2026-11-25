@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Compare Schemes Side-by-Side — SchemeSaathi AI</title>
+  <link rel="stylesheet" href="/assets/css/tokens.css">
+  <link rel="stylesheet" href="/assets/css/base.css">
+  <link rel="stylesheet" href="/assets/css/components.css">
+  <link rel="stylesheet" href="/assets/css/navbar.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400..700;1,9..40,400..700&family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Manrope:wght@400..800&display=swap" rel="stylesheet">
+  <style>
+    .compare-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 2rem;
+      background: var(--color-surface);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      border: 1px solid var(--color-border);
+      box-shadow: var(--shadow-sm);
+    }
+    .compare-table th, .compare-table td {
+      padding: 1.25rem 1.5rem;
+      border-bottom: 1px solid var(--color-border);
+      vertical-align: top;
+      font-size: var(--text-sm);
+    }
+    .compare-table th {
+      width: 220px;
+      background: var(--parchment-50);
+      font-weight: 700;
+      color: var(--color-heading);
+      border-right: 1px solid var(--color-border);
+    }
+    .compare-table td {
+      border-right: 1px solid var(--color-border);
+      width: calc((100% - 220px) / 2);
+    }
+    .compare-table td:last-child {
+      border-right: none;
+    }
+    .scheme-picker {
+      margin-bottom: 1.5rem;
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header"></header>
+
+  <main class="container" style="padding: 2.5rem 1.5rem 5rem;">
+    <div style="margin-bottom: 2rem;">
+      <h1 style="font-size: 2.25rem; margin-bottom: 0.5rem;">Side-by-Side Scheme Comparison</h1>
+      <p class="text-sm text-muted">Select any two welfare programs to compare coverage, eligibility requirements, and documents.</p>
+    </div>
+
+    <!-- Selectors -->
+    <div class="grid grid-cols-1 grid-cols-2 gap-6 scheme-picker">
+      <div class="card">
+        <label class="form-label" for="scheme-select-1">Scheme 1</label>
+        <select id="scheme-select-1" class="form-select">
+          <option value="">Loading schemes...</option>
+        </select>
+      </div>
+
+      <div class="card">
+        <label class="form-label" for="scheme-select-2">Scheme 2</label>
+        <select id="scheme-select-2" class="form-select">
+          <option value="">Loading schemes...</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Comparison Table -->
+    <div id="comparison-container">
+      <div class="card text-center" style="padding: 3rem;">
+        <p class="text-sm text-muted">Select two schemes above to view a detailed parameter comparison.</p>
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer"></footer>
+
+  <script src="/assets/js/translations.js"></script>
+  <script src="/assets/js/i18n.js"></script>
+  <script src="/assets/js/api.js"></script>
+  <script src="/assets/js/auth.js"></script>
+  <script src="/assets/js/components.js"></script>
+  <script>
+    let allSchemes = [];
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      window.renderNavbar('compare');
+      window.renderFooter();
+
+      try {
+        const res = await window.api.get('/schemes?per_page=50');
+        allSchemes = res.data || [];
+
+        const sel1 = document.getElementById('scheme-select-1');
+        const sel2 = document.getElementById('scheme-select-2');
+
+        const optionsHtml = '<option value="">-- Choose a scheme --</option>' + allSchemes.map(s => `
+          <option value="${s.id}">${s.name} (${s.level.toUpperCase()})</option>
+        `).join('');
+
+        sel1.innerHTML = optionsHtml;
+        sel2.innerHTML = optionsHtml;
+
+        if (allSchemes.length >= 2) {
+          sel1.value = allSchemes[0].id;
+          sel2.value = allSchemes[1].id;
+          renderComparison(allSchemes[0].id, allSchemes[1].id);
+        }
+
+        sel1.addEventListener('change', () => triggerComparison());
+        sel2.addEventListener('change', () => triggerComparison());
+      } catch (err) {}
+    });
+
+    function triggerComparison() {
+      const id1 = document.getElementById('scheme-select-1').value;
+      const id2 = document.getElementById('scheme-select-2').value;
+      if (id1 && id2) {
+        renderComparison(id1, id2);
+      }
+    }
+
+    async function renderComparison(id1, id2) {
+      const container = document.getElementById('comparison-container');
+      container.innerHTML = '<div class="card text-center" style="padding: 3rem;"><div class="spinner" style="margin: 0 auto 0.5rem; border-color: var(--color-action);"></div><p class="text-sm text-muted">Comparing schemes...</p></div>';
+
+      try {
+        const [res1, res2] = await Promise.all([
+          window.api.get(`/schemes/${id1}`),
+          window.api.get(`/schemes/${id2}`),
+        ]);
+
+        const s1 = res1.data;
+        const s2 = res2.data;
+
+        container.innerHTML = `
+          <table class="compare-table">
+            <thead>
+              <tr>
+                <th>Attribute</th>
+                <td><h3 style="font-size: 1.2rem; color: var(--color-heading);">${s1.name}</h3></td>
+                <td><h3 style="font-size: 1.2rem; color: var(--color-heading);">${s2.name}</h3></td>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th>Category & Level</th>
+                <td>
+                  <span class="badge badge-category">${(s1.categories && s1.categories[0]) || s1.level}</span>
+                  <span class="badge badge-pending">${s1.level.toUpperCase()}</span>
+                </td>
+                <td>
+                  <span class="badge badge-category">${(s2.categories && s2.categories[0]) || s2.level}</span>
+                  <span class="badge badge-pending">${s2.level.toUpperCase()}</span>
+                </td>
+              </tr>
+              <tr>
+                <th>Max Benefit Amount</th>
+                <td><strong style="color: var(--jade-600); font-size: 1.1rem;">${window.formatCurrency(s1.max_benefit_amount)}</strong></td>
+                <td><strong style="color: var(--jade-600); font-size: 1.1rem;">${window.formatCurrency(s2.max_benefit_amount)}</strong></td>
+              </tr>
+              <tr>
+                <th>Description</th>
+                <td>${s1.description || 'N/A'}</td>
+                <td>${s2.description || 'N/A'}</td>
+              </tr>
+              <tr>
+                <th>Key Benefits</th>
+                <td>${s1.benefits || 'N/A'}</td>
+                <td>${s2.benefits || 'N/A'}</td>
+              </tr>
+              <tr>
+                <th>State Jurisdiction</th>
+                <td>${s1.state || 'All-India (Central)'}</td>
+                <td>${s2.state || 'All-India (Central)'}</td>
+              </tr>
+              <tr>
+                <th>Nodal Department</th>
+                <td>${s1.department || s1.ministry || 'Government of India'}</td>
+                <td>${s2.department || s2.ministry || 'Government of India'}</td>
+              </tr>
+              <tr>
+                <th>Required Documents</th>
+                <td>
+                  ${(s1.documents && s1.documents.length) ? s1.documents.map(d => `<div style="margin-bottom: 0.35rem;">✓ ${d.document_name} ${d.is_mandatory ? '<span class="badge badge-red" style="font-size: 0.65rem;">Mandatory</span>' : ''}</div>`).join('') : 'None specified'}
+                </td>
+                <td>
+                  ${(s2.documents && s2.documents.length) ? s2.documents.map(d => `<div style="margin-bottom: 0.35rem;">✓ ${d.document_name} ${d.is_mandatory ? '<span class="badge badge-red" style="font-size: 0.65rem;">Mandatory</span>' : ''}</div>`).join('') : 'None specified'}
+                </td>
+              </tr>
+              <tr>
+                <th>Eligibility Check</th>
+                <td>
+                  <a href="/app/eligibility.html?scheme=${s1.slug}" class="btn btn-primary btn-sm" style="width: 100%;">Evaluate Eligibility</a>
+                </td>
+                <td>
+                  <a href="/app/eligibility.html?scheme=${s2.slug}" class="btn btn-primary btn-sm" style="width: 100%;">Evaluate Eligibility</a>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        `;
+      } catch (err) {
+        container.innerHTML = '<p class="text-muted">Error comparing schemes.</p>';
+      }
+    }
+  </script>
+</body>
+</html>

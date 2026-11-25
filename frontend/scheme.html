@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Scheme Details — SchemeSaathi AI</title>
+  <link rel="stylesheet" href="/assets/css/tokens.css">
+  <link rel="stylesheet" href="/assets/css/base.css">
+  <link rel="stylesheet" href="/assets/css/components.css">
+  <link rel="stylesheet" href="/assets/css/navbar.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400..700;1,9..40,400..700&family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Manrope:wght@400..800&family=Noto+Sans+Devanagari:wght@400;600;700&family=Noto+Sans+Telugu:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    .scheme-hero {
+      background-color: var(--color-surface);
+      border-bottom: 1px solid var(--color-border);
+      padding: 3rem 0 2.5rem;
+    }
+    .scheme-layout {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 2.5rem;
+      padding: 3rem 0 5rem;
+    }
+    @media (max-width: 860px) {
+      .scheme-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+    .section-box {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: 2rem;
+      margin-bottom: 2rem;
+    }
+    .section-title {
+      font-size: 1.35rem;
+      margin-bottom: 1.25rem;
+      color: var(--color-heading);
+      border-bottom: 1.5px solid var(--parchment-50);
+      padding-bottom: 0.5rem;
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header"></header>
+
+  <main id="scheme-detail-container">
+    <div class="container text-center" style="padding: 4rem 0;">
+      <div class="spinner" style="margin: 0 auto 1rem; border-color: var(--color-action);"></div>
+      <p class="text-muted">Loading scheme details...</p>
+    </div>
+  </main>
+
+  <footer class="site-footer"></footer>
+
+  <script src="/assets/js/translations.js"></script>
+  <script src="/assets/js/i18n.js"></script>
+  <script src="/assets/js/api.js"></script>
+  <script src="/assets/js/auth.js"></script>
+  <script src="/assets/js/components.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      window.renderNavbar('explore');
+      window.renderFooter();
+
+      const urlParams = new URLSearchParams(window.location.search);
+      const slug = urlParams.get('slug');
+      const container = document.getElementById('scheme-detail-container');
+
+      if (!slug) {
+        container.innerHTML = '<div class="container" style="padding: 4rem 0;"><p>Scheme identifier missing. <a href="/explore.html">Browse all schemes</a>.</p></div>';
+        return;
+      }
+
+      try {
+        const res = await window.api.get(`/schemes/${slug}`);
+        const scheme = res.data;
+
+        document.title = `${scheme.name} — SchemeSaathi AI`;
+
+        container.innerHTML = `
+          <div class="scheme-hero">
+            <div class="container">
+              <div class="flex items-center gap-2" style="margin-bottom: 1rem; flex-wrap: wrap;">
+                <span class="badge badge-category">${(scheme.categories && scheme.categories[0]) || scheme.level}</span>
+                <span class="badge ${scheme.verification_status === 'verified' ? 'badge-verified' : 'badge-demo'}">
+                  ${scheme.verification_status.toUpperCase()}
+                </span>
+                ${scheme.state ? `<span class="badge badge-pending">State: ${scheme.state}</span>` : '<span class="badge badge-pending">Central</span>'}
+              </div>
+
+              <h1 style="font-size: clamp(2rem, 4vw, 2.75rem); margin-bottom: 0.75rem; line-height: 1.2;">
+                ${scheme.name}
+              </h1>
+              ${scheme.name_te ? `<p style="font-size: 1.15rem; color: var(--color-text-muted); margin-bottom: 0.25rem;">తెలుగు: <strong>${scheme.name_te}</strong></p>` : ''}
+              ${scheme.name_hi ? `<p style="font-size: 1.15rem; color: var(--color-text-muted); margin-bottom: 1.5rem;">हिन्दी: <strong>${scheme.name_hi}</strong></p>` : ''}
+
+              <div class="flex gap-3" style="flex-wrap: wrap;">
+                <a href="/app/eligibility.html?scheme=${scheme.slug}" class="btn btn-primary btn-lg">
+                  Check Your Eligibility Now →
+                </a>
+                <button onclick="bookmarkScheme(${scheme.id})" class="btn btn-secondary btn-lg">
+                  ★ Save Scheme
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="container scheme-layout">
+            <div>
+              <div class="section-box">
+                <h2 class="section-title">Overview & Objective</h2>
+                <p style="font-size: 1.05rem; line-height: 1.7; margin-bottom: 1.5rem; color: var(--color-text);">
+                  ${scheme.description}
+                </p>
+                ${scheme.description_te ? `<div style="background: var(--parchment-50); padding: 1rem; border-radius: var(--radius-md); margin-bottom: 1rem; font-size: 0.95rem; line-height: 1.7;"><strong>తెలుగు వివరణ:</strong> ${scheme.description_te}</div>` : ''}
+                ${scheme.description_hi ? `<div style="background: var(--parchment-50); padding: 1rem; border-radius: var(--radius-md); font-size: 0.95rem; line-height: 1.7;"><strong>हिन्दी विवरण:</strong> ${scheme.description_hi}</div>` : ''}
+              </div>
+
+              <div class="section-box">
+                <h2 class="section-title">Benefits & Assistance</h2>
+                <div style="font-size: 1.05rem; line-height: 1.7; color: var(--color-text); margin-bottom: 1rem;">
+                  ${scheme.benefits}
+                </div>
+                ${scheme.max_benefit_amount ? `
+                  <div style="background: var(--mist-sage); color: var(--jade-600); padding: 1rem; border-radius: var(--radius-md); font-weight: var(--weight-bold); font-size: 1.1rem;">
+                    Maximum Benefit Amount: ${window.formatCurrency(scheme.max_benefit_amount)}
+                  </div>
+                ` : ''}
+              </div>
+
+              <div class="section-box">
+                <h2 class="section-title">Required Documents</h2>
+                ${(scheme.documents && scheme.documents.length > 0) ? `
+                  <ul style="list-style: none; display: flex; flex-direction: column; gap: 0.75rem;">
+                    ${scheme.documents.map(d => `
+                      <li style="display: flex; align-items: flex-start; gap: 0.75rem; padding: 0.75rem; background: var(--parchment-50); border-radius: var(--radius-md);">
+                        <span style="color: var(--vermilion-600); font-weight: bold;">✓</span>
+                        <div>
+                          <strong>${d.document_name}</strong> ${d.is_mandatory ? '<span class="badge badge-red" style="font-size: 0.7rem;">Mandatory</span>' : '<span class="badge badge-pending" style="font-size: 0.7rem;">Optional</span>'}
+                          ${d.document_name_te ? `<div style="font-size: 0.85rem; color: var(--ink-muted);">తెలుగు: ${d.document_name_te}</div>` : ''}
+                          ${d.document_name_hi ? `<div style="font-size: 0.85rem; color: var(--ink-muted);">हिन्दी: ${d.document_name_hi}</div>` : ''}
+                          ${d.description ? `<p style="font-size: 0.85rem; color: var(--color-text-muted); margin-top: 0.25rem;">${d.description}</p>` : ''}
+                        </div>
+                      </li>
+                    `).join('')}
+                  </ul>
+                ` : '<p class="text-muted">No specific documents specified for this scheme.</p>'}
+              </div>
+            </div>
+
+            <!-- Sidebar Info -->
+            <aside>
+              <div class="section-box">
+                <h3 style="font-size: 1.1rem; margin-bottom: 1rem;">Scheme Metadata</h3>
+                <div style="display: flex; flex-direction: column; gap: 0.85rem; font-size: 0.9rem;">
+                  <div>
+                    <div class="text-muted">Nodal Department</div>
+                    <strong>${scheme.department || scheme.ministry || 'Government of India'}</strong>
+                  </div>
+                  <div>
+                    <div class="text-muted">Governance Jurisdiction</div>
+                    <strong>${scheme.level === 'central' ? 'Central (All-India)' : `State Government of ${scheme.state}`}</strong>
+                  </div>
+                  <div>
+                    <div class="text-muted">Verification Status</div>
+                    <span class="badge ${scheme.verification_status === 'verified' ? 'badge-verified' : 'badge-demo'}">
+                      ${scheme.verification_status.toUpperCase()}
+                    </span>
+                  </div>
+                  ${scheme.official_url ? `
+                    <div style="margin-top: 0.5rem;">
+                      <a href="${scheme.official_url}" target="_blank" rel="noopener" class="btn btn-secondary btn-sm" style="width: 100%;">
+                        Official Department Website ↗
+                      </a>
+                    </div>
+                  ` : ''}
+                  ${scheme.apply_url ? `
+                    <div>
+                      <a href="${scheme.apply_url}" target="_blank" rel="noopener" class="btn btn-primary btn-sm" style="width: 100%;">
+                        Official Application Portal ↗
+                      </a>
+                    </div>
+                  ` : ''}
+                </div>
+              </div>
+
+              <div class="section-box" style="background: var(--parchment-50);">
+                <h3 style="font-size: 1.1rem; margin-bottom: 0.75rem;">Ask Saathi AI</h3>
+                <p class="text-sm text-muted" style="margin-bottom: 1rem;">Have questions about eligibility or documents for this scheme? Chat directly with Saathi AI.</p>
+                <a href="/app/assistant.html?prompt=${encodeURIComponent('Tell me about the eligibility and documents for ' + scheme.name)}" class="btn btn-primary btn-sm" style="width: 100%;">
+                  Discuss with Saathi AI
+                </a>
+              </div>
+            </aside>
+          </div>
+        `;
+      } catch (err) {
+        container.innerHTML = '<div class="container" style="padding: 4rem 0;"><p class="text-muted">Scheme could not be loaded. Please ensure the backend is running.</p></div>';
+      }
+    });
+
+    async function bookmarkScheme(schemeId) {
+      if (!window.auth.isAuthenticated()) {
+        window.showToast('Please sign in to save schemes to your bookmarks.', 'warning');
+        setTimeout(() => window.location.href = '/auth/login.html', 1200);
+        return;
+      }
+      try {
+        await window.api.post('/saved', { scheme_id: schemeId });
+        window.showToast('Scheme saved to your bookmarks!', 'success');
+      } catch (err) {
+        // Handled by api.js
+      }
+    }
+  </script>
+</body>
+</html>

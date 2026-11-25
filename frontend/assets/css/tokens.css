@@ -1,0 +1,253 @@
+/* ============================================================
+   SchemeSaathi AI — Design Tokens
+   "Civic Heritage Meets Modern Intelligence"
+   ============================================================
+   All colour, typography, spacing, shadow, radius and motion
+   tokens live here. Import this file first in every page.
+   ============================================================ */
+
+/* ----- 1. COLOUR: CORE ----- */
+:root {
+  --parchment-50:   #FBF7EF;
+  --parchment-100:  #F6F0E5;
+  --warm-white:     #FFFCF6;
+  --rose-clay:      #E9D3C7;
+  --mist-sage:      #E1E9DE;
+
+  --aubergine-900:  #231826;
+  --aubergine-800:  #302033;
+  --aubergine-600:  #4A3350;
+
+  --ink:            #272522;
+  --ink-muted:      #5E5750;
+  --line:           #D9CDBB;
+}
+
+/* ----- 2. COLOUR: ACTION ----- */
+:root {
+  --vermilion-500:  #C64E35;
+  --vermilion-600:  #B3412A;   /* primary button fill   */
+  --vermilion-700:  #963520;   /* hover / pressed       */
+}
+
+/* ----- 3. COLOUR: STATUS ----- */
+:root {
+  /* Positive / Verified / Potentially Eligible */
+  --jade-100:       #DDEBE3;
+  --jade-600:       #527966;
+
+  /* Needs Verification / Warning */
+  --amber-100:      #F6E7C4;
+  --amber-700:      #8A5A0B;
+
+  /* Not Eligible / Error */
+  --oxblood-100:    #F2D9D8;
+  --oxblood-700:    #8E2F3A;
+
+  /* Premium accents (brass-700 for any text) */
+  --brass-500:      #B58B4C;
+  --brass-700:      #7D5C26;
+}
+
+/* ----- 4. COLOUR: DARK MODE ----- */
+:root[data-theme="dark"] {
+  --parchment-50:   #261B2C;
+  --parchment-100:  #1B1320;
+  --warm-white:     #261B2C;
+  --rose-clay:      #3A2D41;
+  --mist-sage:      #2A3530;
+
+  --aubergine-900:  #F2EBDD;
+  --aubergine-800:  #F2EBDD;
+  --aubergine-600:  #CABDD0;
+
+  --ink:            #F2EBDD;
+  --ink-muted:      #B9AEA0;
+  --line:           #3A2D41;
+
+  --vermilion-500:  #E0674D;
+  --vermilion-600:  #E0674D;
+  --vermilion-700:  #C8553B;
+
+  --jade-100:       #1E332A;
+  --jade-600:       #7FB095;
+
+  --amber-100:      #332A18;
+  --amber-700:      #E2B25A;
+
+  --oxblood-100:    #3A1E22;
+  --oxblood-700:    #E27C86;
+
+  --brass-500:      #D4A85E;
+  --brass-700:      #E2B25A;
+}
+
+/* ----- 5. SEMANTIC ALIASES ----- */
+:root {
+  --color-bg:               var(--parchment-100);
+  --color-bg-elevated:      var(--parchment-50);
+  --color-surface:          var(--warm-white);
+  --color-surface-secondary:var(--rose-clay);
+  --color-surface-positive: var(--mist-sage);
+
+  --color-text:             var(--ink);
+  --color-text-muted:       var(--ink-muted);
+  --color-heading:          var(--aubergine-800);
+  --color-nav:              var(--aubergine-800);
+  --color-footer:           var(--aubergine-900);
+
+  --color-border:           var(--line);
+
+  --color-action:           var(--vermilion-600);
+  --color-action-hover:     var(--vermilion-700);
+  --color-action-text:      #FFFFFF;
+
+  --color-accent:           var(--vermilion-500);
+  --color-premium:          var(--brass-500);
+  --color-premium-text:     var(--brass-700);
+
+  --color-status-positive:  var(--jade-600);
+  --color-status-positive-bg: var(--jade-100);
+  --color-status-warning:   var(--amber-700);
+  --color-status-warning-bg:var(--amber-100);
+  --color-status-negative:  var(--oxblood-700);
+  --color-status-negative-bg:var(--oxblood-100);
+
+  --color-focus-ring:       var(--aubergine-600);
+}
+
+/* ----- 6. TYPOGRAPHY ----- */
+:root {
+  /* Font families */
+  --font-display:  'Fraunces', 'Noto Serif', Georgia, serif;
+  --font-heading:  'Manrope', 'Segoe UI', system-ui, sans-serif;
+  --font-body:     'DM Sans', 'Segoe UI', system-ui, sans-serif;
+  --font-telugu:   'Noto Sans Telugu', var(--font-body);
+  --font-hindi:    'Noto Sans Devanagari', var(--font-body);
+
+  /* Font weights */
+  --weight-regular:  400;
+  --weight-medium:   500;
+  --weight-semibold: 600;
+  --weight-bold:     700;
+  --weight-extrabold:800;
+
+  /* Type scale (rem) */
+  --text-xs:    0.8125rem;   /* 13px */
+  --text-sm:    0.9375rem;   /* 15px */
+  --text-base:  1rem;        /* 16px */
+  --text-md:    1.125rem;    /* 18px */
+  --text-lg:    1.375rem;    /* 22px */
+  --text-xl:    1.75rem;     /* 28px */
+  --text-2xl:   2.25rem;     /* 36px */
+  --text-3xl:   3rem;        /* 48px */
+  --text-hero:  3.75rem;     /* 60px */
+
+  /* Line heights */
+  --leading-tight:   1.2;
+  --leading-snug:    1.4;
+  --leading-normal:  1.6;
+  --leading-indic:   1.75;   /* Telugu / Hindi scripts */
+
+  /* Letter spacing */
+  --tracking-tight:  -0.02em;
+  --tracking-normal: 0;
+  --tracking-wide:   0.04em;
+  --tracking-eyebrow:0.08em;
+
+  /* Max line length */
+  --measure:         65ch;
+}
+
+/* ----- 7. SPACING (8px scale) ----- */
+:root {
+  --space-0:   0;
+  --space-1:   0.25rem;   /*  4px */
+  --space-2:   0.5rem;    /*  8px */
+  --space-3:   0.75rem;   /* 12px */
+  --space-4:   1rem;      /* 16px */
+  --space-5:   1.25rem;   /* 20px */
+  --space-6:   1.5rem;    /* 24px */
+  --space-8:   2rem;      /* 32px */
+  --space-10:  2.5rem;    /* 40px */
+  --space-12:  3rem;      /* 48px */
+  --space-16:  4rem;      /* 64px */
+  --space-20:  5rem;      /* 80px */
+  --space-24:  6rem;      /* 96px */
+}
+
+/* ----- 8. LAYOUT ----- */
+:root {
+  --grid-columns:    12;
+  --grid-max-content:80rem;    /* 1280px */
+  --grid-max-shell:  90rem;    /* 1440px */
+  --grid-gutter:     var(--space-6);  /* 24px */
+}
+
+/* ----- 9. BORDER RADIUS ----- */
+:root {
+  --radius-sm:   4px;
+  --radius-md:   6px;     /* inputs, buttons */
+  --radius-lg:   10px;    /* cards           */
+  --radius-pill: 999px;   /* status chips only */
+}
+
+/* ----- 10. SHADOWS ----- */
+:root {
+  /* Single shadow token: subtle layered shadow */
+  --shadow:
+    0 1px  0    rgba(39, 37, 34, 0.04),
+    0 8px  24px rgba(39, 37, 34, 0.06);
+}
+
+/* ----- 11. FOCUS ----- */
+:root {
+  --focus-ring-width:  3px;
+  --focus-ring-offset: 2px;
+  --focus-ring-color:  var(--color-focus-ring);
+}
+
+/* ----- 12. MOTION ----- */
+:root {
+  --duration-fast:   150ms;
+  --duration-normal: 200ms;
+  --duration-slow:   250ms;
+  --easing-default:  ease-out;
+  --easing-bounce:   cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --duration-fast:   0ms;
+    --duration-normal: 0ms;
+    --duration-slow:   0ms;
+  }
+}
+
+/* ----- 13. Z-INDEX SCALE ----- */
+:root {
+  --z-base:      1;
+  --z-dropdown:  100;
+  --z-sticky:    200;
+  --z-overlay:   300;
+  --z-modal:     400;
+  --z-toast:     500;
+  --z-tooltip:   600;
+}
+
+/* ----- 14. GRADIENTS ----- */
+:root {
+  /* Hero panel gradient (use in max 2 places) */
+  --gradient-hero:
+    linear-gradient(160deg, #302033 0%, #231826 100%);
+
+  /* Warm glow behind illustrations */
+  --gradient-glow:
+    radial-gradient(ellipse at center, rgba(233, 211, 199, 0.5) 0%, transparent 70%);
+}
+
+/* ----- 15. BREAKPOINTS (reference; use in @media) ----- */
+/* Mobile:  360px – 390px   (bottom nav, single column)
+   Tablet:  768px           (2 columns, side nav optional)
+   Desktop: 1024px          (full 12-col grid)
+   Wide:    1440px          (max shell)                     */

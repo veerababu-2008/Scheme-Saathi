@@ -1,0 +1,45 @@
+version: '3.8'
+
+services:
+  db:
+    image: mysql:8.0
+    container_name: schemesaathi_mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password_change_me
+      MYSQL_DATABASE: schemesaathi
+      MYSQL_USER: schemesaathi_user
+      MYSQL_PASSWORD: schemesaathi_password_change_me
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: schemesaathi_api
+    restart: always
+    environment:
+      FLASK_ENV: production
+      DATABASE_URL: mysql+pymysql://schemesaathi_user:schemesaathi_password_change_me@db:3306/schemesaathi?charset=utf8mb4
+      JWT_SECRET_KEY: change_this_to_a_random_32_byte_string_for_production
+      GEMINI_API_KEY: ${GEMINI_API_KEY}
+      CORS_ORIGINS: http://localhost:3000,https://schemesaathi.in
+    ports:
+      - "5000:5000"
+    depends_on:
+      - db
+
+  frontend:
+    image: nginx:alpine
+    container_name: schemesaathi_web
+    restart: always
+    ports:
+      - "3000:80"
+    volumes:
+      - ./frontend:/usr/share/nginx/html:ro
+
+volumes:
+  mysql_data:

@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Citizen Dashboard — SchemeSaathi AI</title>
+  <link rel="stylesheet" href="/assets/css/tokens.css">
+  <link rel="stylesheet" href="/assets/css/base.css">
+  <link rel="stylesheet" href="/assets/css/components.css">
+  <link rel="stylesheet" href="/assets/css/navbar.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400..700;1,9..40,400..700&family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Manrope:wght@400..800&display=swap" rel="stylesheet">
+  <style>
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 2rem;
+      padding: 2.5rem 0 4rem;
+    }
+    @media (max-width: 860px) {
+      .dashboard-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    .profile-banner {
+      background: linear-gradient(135deg, var(--rose-clay) 0%, var(--parchment-50) 100%);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem 2rem;
+      margin-bottom: 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .progress-bar-bg {
+      width: 100%;
+      height: 8px;
+      background: var(--color-border);
+      border-radius: var(--radius-pill);
+      overflow: hidden;
+      margin-top: 0.5rem;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      background: var(--color-action);
+      border-radius: var(--radius-pill);
+      transition: width 0.4s ease;
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header"></header>
+
+  <main class="container">
+    <div style="padding-top: 2rem;">
+      <h1 id="welcome-heading" style="font-size: 2rem; margin-bottom: 0.25rem;">Citizen Dashboard</h1>
+      <p class="text-sm text-muted">Your welfare discovery hub and application readiness center.</p>
+    </div>
+
+    <!-- Profile Completion Alert -->
+    <div id="profile-banner" class="profile-banner" style="display: none;">
+      <div style="flex: 1; min-width: 240px;">
+        <div class="flex items-center gap-2">
+          <strong>Complete Your Profile</strong>
+          <span id="profile-pct" class="badge badge-amber">0% Completed</span>
+        </div>
+        <p class="text-sm text-muted" style="margin-top: 0.25rem;">
+          Add your age, state, and occupation to receive accurately matched scheme recommendations.
+        </p>
+        <div class="progress-bar-bg">
+          <div id="profile-bar" class="progress-bar-fill" style="width: 0%;"></div>
+        </div>
+      </div>
+      <a href="/app/profile.html" class="btn btn-primary btn-sm">Update Profile →</a>
+    </div>
+
+    <div class="dashboard-grid">
+      <!-- Left Column: Recommended Schemes -->
+      <section>
+        <div class="flex items-center justify-between" style="margin-bottom: 1.25rem;">
+          <div>
+            <h2 style="font-size: 1.35rem;">Recommended For You</h2>
+            <p class="text-xs text-muted">Matched using multi-factor profile scoring and eligibility rules.</p>
+          </div>
+          <a href="/explore.html" class="btn btn-subtle btn-sm">Explore All →</a>
+        </div>
+
+        <div id="recommendations-container" class="grid grid-cols-1 gap-4">
+          <div class="card" style="text-align: center; padding: 2.5rem;">
+            <div class="spinner" style="margin: 0 auto 0.75rem; border-color: var(--color-action);"></div>
+            <p class="text-sm text-muted">Calculating recommendations...</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Right Column: Shortcuts & Checklist Summary -->
+      <aside>
+        <!-- Saathi AI Quick Card -->
+        <div class="card" style="background: var(--aubergine-800); color: #fff; margin-bottom: 1.5rem;">
+          <h3 style="color: #fff; font-size: 1.15rem; margin-bottom: 0.5rem;">Ask Saathi AI</h3>
+          <p style="color: #CABDD0; font-size: 0.85rem; line-height: 1.5; margin-bottom: 1.25rem;">
+            Have a question about eligibility or application processes? Talk in Telugu, Hindi, or English.
+          </p>
+          <a href="/app/assistant.html" class="btn btn-primary btn-sm" style="width: 100%;">
+            Launch Assistant
+          </a>
+        </div>
+
+        <!-- Document Checklist Summary Card -->
+        <div class="card" style="margin-bottom: 1.5rem;">
+          <div class="flex items-center justify-between" style="margin-bottom: 0.75rem;">
+            <h3 style="font-size: 1.15rem;">Checklist Progress</h3>
+            <a href="/app/checklist.html" class="text-xs font-semibold">View All</a>
+          </div>
+          <div id="checklist-summary-box">
+            <p class="text-sm text-muted">Loading checklist state...</p>
+          </div>
+        </div>
+
+        <!-- Saved Schemes Quick Card -->
+        <div class="card">
+          <div class="flex items-center justify-between" style="margin-bottom: 0.75rem;">
+            <h3 style="font-size: 1.15rem;">Bookmarked Schemes</h3>
+            <a href="/app/saved.html" class="text-xs font-semibold">View All</a>
+          </div>
+          <div id="saved-summary-box">
+            <p class="text-sm text-muted">Loading saved schemes...</p>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <footer class="site-footer"></footer>
+
+  <script src="/assets/js/translations.js"></script>
+  <script src="/assets/js/i18n.js"></script>
+  <script src="/assets/js/api.js"></script>
+  <script src="/assets/js/auth.js"></script>
+  <script src="/assets/js/components.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      window.auth.requireAuth();
+      window.renderNavbar('dashboard');
+      window.renderFooter();
+
+      const user = window.auth.getUser();
+      if (user) {
+        document.getElementById('welcome-heading').textContent = `Welcome, ${user.email.split('@')[0]}!`;
+      }
+
+      // 1. Load Profile & Completion
+      try {
+        const profRes = await window.api.get('/profile');
+        const prof = profRes.data;
+        const pct = prof.profile_complete_pct || 0;
+        if (pct < 100) {
+          document.getElementById('profile-banner').style.display = 'flex';
+          document.getElementById('profile-pct').textContent = `${pct}% Complete`;
+          document.getElementById('profile-bar').style.width = `${pct}%`;
+        }
+      } catch (err) {}
+
+      // 2. Load Recommendations
+      try {
+        const recRes = await window.api.get('/recommendations?limit=4');
+        const list = recRes.data || [];
+        const container = document.getElementById('recommendations-container');
+
+        if (list.length === 0) {
+          container.innerHTML = `
+            <div class="card" style="text-align: center; padding: 2rem;">
+              <p class="text-muted text-sm">No specific recommendations yet. Explore the catalog to discover schemes.</p>
+              <a href="/explore.html" class="btn btn-secondary btn-sm" style="margin-top: 1rem;">Browse Schemes</a>
+            </div>
+          `;
+        } else {
+          container.innerHTML = list.map(item => {
+            const s = item.scheme;
+            const reasons = item.reasons || [];
+            return `
+              <div class="card">
+                <div class="flex items-center justify-between" style="margin-bottom: 0.5rem;">
+                  <span class="badge badge-category">${(s.categories && s.categories[0]) || s.level}</span>
+                  <span class="badge ${s.verification_status === 'verified' ? 'badge-verified' : 'badge-demo'}">
+                    ${s.verification_status.toUpperCase()}
+                  </span>
+                </div>
+                <h3 style="font-size: 1.15rem; margin-bottom: 0.35rem;">
+                  <a href="/scheme.html?slug=${s.slug}" style="color: var(--color-heading);">${s.name}</a>
+                </h3>
+                <p class="text-xs text-muted" style="margin-bottom: 0.75rem;">
+                  Max Benefit: <strong>${window.formatCurrency(s.max_benefit_amount)}</strong>
+                </p>
+                ${reasons.length > 0 ? `
+                  <div style="background: var(--parchment-50); border-radius: var(--radius-sm); padding: 0.5rem 0.75rem; margin-bottom: 1rem; font-size: 0.78rem; color: var(--color-heading);">
+                    💡 <em>${reasons.join(' &bull; ')}</em>
+                  </div>
+                ` : ''}
+                <div class="flex gap-2">
+                  <a href="/scheme.html?slug=${s.slug}" class="btn btn-secondary btn-sm" style="flex: 1;">Details</a>
+                  <a href="/app/eligibility.html?scheme=${s.slug}" class="btn btn-primary btn-sm" style="flex: 1;">Check Eligibility</a>
+                </div>
+              </div>
+            `;
+          }).join('');
+        }
+      } catch (err) {
+        document.getElementById('recommendations-container').innerHTML = `
+          <p class="text-sm text-muted">Unable to load recommendations. Ensure backend is running.</p>
+        `;
+      }
+
+      // 3. Load Checklist Summary
+      try {
+        const chkRes = await window.api.get('/checklist/summary');
+        const summary = chkRes.data || [];
+        const box = document.getElementById('checklist-summary-box');
+        if (summary.length === 0) {
+          box.innerHTML = '<p class="text-xs text-muted">No documents tracked yet. Start from any scheme page.</p>';
+        } else {
+          box.innerHTML = summary.slice(0, 3).map(c => `
+            <div style="margin-bottom: 0.75rem;">
+              <div class="flex justify-between text-xs font-semibold">
+                <span>${c.scheme_name}</span>
+                <span>${c.completion_pct}%</span>
+              </div>
+              <div class="progress-bar-bg" style="height: 6px;">
+                <div class="progress-bar-fill" style="width: ${c.completion_pct}%;"></div>
+              </div>
+            </div>
+          `).join('');
+        }
+      } catch (err) {
+        document.getElementById('checklist-summary-box').innerHTML = '<p class="text-xs text-muted">No checklist activity.</p>';
+      }
+
+      // 4. Load Saved Schemes Count
+      try {
+        const savedRes = await window.api.get('/saved?per_page=3');
+        const savedList = savedRes.data || [];
+        const box = document.getElementById('saved-summary-box');
+        if (savedList.length === 0) {
+          box.innerHTML = '<p class="text-xs text-muted">No schemes bookmarked yet.</p>';
+        } else {
+          box.innerHTML = savedList.map(item => `
+            <div style="font-size: 0.85rem; padding: 0.4rem 0; border-bottom: 1px dashed var(--color-border);">
+              <a href="/scheme.html?slug=${item.scheme ? item.scheme.slug : '#'}" style="color: var(--color-heading); font-weight: 600;">
+                ${item.scheme ? item.scheme.name : 'Scheme #' + item.scheme_id}
+              </a>
+            </div>
+          `).join('');
+        }
+      } catch (err) {
+        document.getElementById('saved-summary-box').innerHTML = '<p class="text-xs text-muted">No bookmarks loaded.</p>';
+      }
+    });
+  </script>
+</body>
+</html>

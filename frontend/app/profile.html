@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Citizen Profile Settings — SchemeSaathi AI</title>
+  <link rel="stylesheet" href="/assets/css/tokens.css">
+  <link rel="stylesheet" href="/assets/css/base.css">
+  <link rel="stylesheet" href="/assets/css/components.css">
+  <link rel="stylesheet" href="/assets/css/navbar.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400..700;1,9..40,400..700&family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Manrope:wght@400..800&display=swap" rel="stylesheet">
+</head>
+<body>
+  <header class="site-header"></header>
+
+  <main class="container-narrow" style="padding: 2.5rem 1.5rem 5rem;">
+    <div style="margin-bottom: 2rem;">
+      <h1 style="font-size: 2.25rem; margin-bottom: 0.5rem;">Citizen Profile Settings</h1>
+      <p class="text-sm text-muted">Manage your demographic details to receive high-accuracy eligibility evaluations.</p>
+    </div>
+
+    <div class="card">
+      <form id="profile-form">
+        <div class="form-group">
+          <label class="form-label" for="full_name">Full Name</label>
+          <input type="text" id="full_name" class="form-input" placeholder="Your full name" required>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div class="form-group">
+            <label class="form-label" for="age">Age</label>
+            <input type="number" id="age" class="form-input" placeholder="e.g. 42" min="1" max="120">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="gender">Gender</label>
+            <select id="gender" class="form-select">
+              <option value="">-- Select --</option>
+              <option value="male">Male</option>
+              <option value="female">Female</option>
+              <option value="transgender">Transgender</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div class="form-group">
+            <label class="form-label" for="state">State</label>
+            <select id="state" class="form-select">
+              <option value="">-- Select State --</option>
+              <option value="Telangana">Telangana</option>
+              <option value="Andhra Pradesh">Andhra Pradesh</option>
+              <option value="Karnataka">Karnataka</option>
+              <option value="Maharashtra">Maharashtra</option>
+              <option value="Delhi">Delhi</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="district">District</label>
+            <input type="text" id="district" class="form-input" placeholder="e.g. Warangal, Rangareddy">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div class="form-group">
+            <label class="form-label" for="income">Annual Household Income (₹)</label>
+            <input type="number" id="income" class="form-input" placeholder="e.g. 120000" min="0">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="occupation">Primary Occupation</label>
+            <select id="occupation" class="form-select">
+              <option value="">-- Select Occupation --</option>
+              <option value="farmer">Farmer / Cultivator</option>
+              <option value="agricultural_labourer">Agricultural Labourer</option>
+              <option value="street_vendor">Street Vendor</option>
+              <option value="student">Student</option>
+              <option value="unemployed">Unemployed</option>
+              <option value="salaried">Salaried Employee</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div class="form-group">
+            <label class="form-label" for="caste">Social Category (Caste)</label>
+            <select id="caste" class="form-select">
+              <option value="">-- Select Category --</option>
+              <option value="general">General</option>
+              <option value="obc">OBC</option>
+              <option value="sc">SC</option>
+              <option value="st">ST</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="land_holding">Land Holding (Acres)</label>
+            <input type="number" step="0.1" id="land_holding" class="form-input" placeholder="0 if landless">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div class="form-group">
+            <label class="form-label" for="disability">Disability Status (PwD)</label>
+            <select id="disability" class="form-select">
+              <option value="false">No</option>
+              <option value="true">Yes</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="marital">Marital Status</label>
+            <select id="marital" class="form-select">
+              <option value="">-- Select --</option>
+              <option value="single">Single</option>
+              <option value="married">Married</option>
+              <option value="widowed">Widowed</option>
+              <option value="divorced">Divorced</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="flex justify-between items-center" style="margin-top: 1.5rem;">
+          <span id="profile-pct-text" class="text-sm font-semibold text-muted">Completion: 0%</span>
+          <button type="submit" id="save-btn" class="btn btn-primary btn-lg">
+            Save Profile Changes
+          </button>
+        </div>
+      </form>
+    </div>
+  </main>
+
+  <footer class="site-footer"></footer>
+
+  <script src="/assets/js/translations.js"></script>
+  <script src="/assets/js/i18n.js"></script>
+  <script src="/assets/js/api.js"></script>
+  <script src="/assets/js/auth.js"></script>
+  <script src="/assets/js/components.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      window.auth.requireAuth();
+      window.renderNavbar('profile');
+      window.renderFooter();
+
+      try {
+        const res = await window.api.get('/profile');
+        const p = res.data;
+
+        if (p.full_name) document.getElementById('full_name').value = p.full_name;
+        if (p.age) document.getElementById('age').value = p.age;
+        if (p.gender) document.getElementById('gender').value = p.gender;
+        if (p.state) document.getElementById('state').value = p.state;
+        if (p.district) document.getElementById('district').value = p.district;
+        if (p.annual_income !== null && p.annual_income !== undefined) document.getElementById('income').value = p.annual_income;
+        if (p.occupation) document.getElementById('occupation').value = p.occupation;
+        if (p.caste_category) document.getElementById('caste').value = p.caste_category;
+        if (p.land_holding_acres !== null && p.land_holding_acres !== undefined) document.getElementById('land_holding').value = p.land_holding_acres;
+        if (p.is_disabled !== undefined) document.getElementById('disability').value = p.is_disabled ? 'true' : 'false';
+        if (p.marital_status) document.getElementById('marital').value = p.marital_status;
+
+        document.getElementById('profile-pct-text').textContent = `Profile Completion: ${p.profile_complete_pct || 0}%`;
+      } catch (err) {}
+
+      document.getElementById('profile-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const btn = document.getElementById('save-btn');
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner"></span> Saving...';
+
+        const payload = {
+          full_name: document.getElementById('full_name').value.trim(),
+          age: parseInt(document.getElementById('age').value) || null,
+          gender: document.getElementById('gender').value || null,
+          state: document.getElementById('state').value || null,
+          district: document.getElementById('district').value.trim() || null,
+          annual_income: parseInt(document.getElementById('income').value) || null,
+          occupation: document.getElementById('occupation').value || null,
+          caste_category: document.getElementById('caste').value || null,
+          land_holding_acres: parseFloat(document.getElementById('land_holding').value) || 0,
+          is_disabled: document.getElementById('disability').value === 'true',
+          marital_status: document.getElementById('marital').value || null,
+        };
+
+        try {
+          const res = await window.api.put('/profile', payload);
+          window.showToast('Profile updated successfully!', 'success');
+          document.getElementById('profile-pct-text').textContent = `Profile Completion: ${res.data.profile_complete_pct || 0}%`;
+        } catch (err) {
+          // Handled by api.js
+        } finally {
+          btn.disabled = false;
+          btn.textContent = 'Save Profile Changes';
+        }
+      });
+    });
+  </script>
+</body>
+</html>

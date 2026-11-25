@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Saved Schemes — SchemeSaathi AI</title>
+  <link rel="stylesheet" href="/assets/css/tokens.css">
+  <link rel="stylesheet" href="/assets/css/base.css">
+  <link rel="stylesheet" href="/assets/css/components.css">
+  <link rel="stylesheet" href="/assets/css/navbar.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400..700;1,9..40,400..700&family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Manrope:wght@400..800&display=swap" rel="stylesheet">
+</head>
+<body>
+  <header class="site-header"></header>
+
+  <main class="container-narrow" style="padding: 2.5rem 1.5rem 5rem;">
+    <div style="margin-bottom: 2rem;">
+      <h1 style="font-size: 2.25rem; margin-bottom: 0.5rem;">Your Bookmarked Schemes</h1>
+      <p class="text-sm text-muted">Keep track of welfare programs you plan to apply for along with your personal notes.</p>
+    </div>
+
+    <div id="saved-list-container" class="grid grid-cols-1 gap-4">
+      <div class="card text-center" style="padding: 3rem;">
+        <div class="spinner" style="margin: 0 auto 0.75rem; border-color: var(--color-action);"></div>
+        <p class="text-sm text-muted">Loading saved schemes...</p>
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer"></footer>
+
+  <script src="/assets/js/translations.js"></script>
+  <script src="/assets/js/i18n.js"></script>
+  <script src="/assets/js/api.js"></script>
+  <script src="/assets/js/auth.js"></script>
+  <script src="/assets/js/components.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      window.auth.requireAuth();
+      window.renderNavbar('saved');
+      window.renderFooter();
+
+      loadSavedList();
+    });
+
+    async function loadSavedList() {
+      const container = document.getElementById('saved-list-container');
+      try {
+        const res = await window.api.get('/saved?per_page=50');
+        const items = res.data || [];
+
+        if (items.length === 0) {
+          container.innerHTML = `
+            <div class="card text-center" style="padding: 3rem;">
+              <p style="font-size: 1.1rem; margin-bottom: 0.5rem;">You haven't bookmarked any schemes yet.</p>
+              <p class="text-sm text-muted" style="margin-bottom: 1.5rem;">Browse the discovery catalog to bookmark schemes you are interested in.</p>
+              <a href="/explore.html" class="btn btn-primary btn-sm">Discover Schemes Now</a>
+            </div>
+          `;
+          return;
+        }
+
+        container.innerHTML = items.map(item => {
+          const s = item.scheme;
+          const schemeId = item.scheme_id;
+          return `
+            <div class="card flex flex-col justify-between" id="saved-item-${schemeId}">
+              <div>
+                <div class="flex items-center justify-between" style="margin-bottom: 0.5rem;">
+                  <span class="badge badge-category">${(s && s.categories && s.categories[0]) || 'Welfare'}</span>
+                  <button onclick="removeBookmark(${schemeId})" class="btn btn-subtle btn-sm" style="color: var(--oxblood-700);">
+                    ✕ Remove
+                  </button>
+                </div>
+                <h3 style="font-size: 1.2rem; margin-bottom: 0.35rem;">
+                  <a href="/scheme.html?slug=${s ? s.slug : '#'}" style="color: var(--color-heading);">${s ? s.name : 'Scheme #' + schemeId}</a>
+                </h3>
+                <p class="text-xs text-muted" style="margin-bottom: 0.75rem;">
+                  Max Benefit: <strong>${s ? window.formatCurrency(s.max_benefit_amount) : 'N/A'}</strong>
+                </p>
+
+                <!-- Personal Notes Editor -->
+                <div style="background: var(--parchment-50); border-radius: var(--radius-md); padding: 0.75rem; margin-bottom: 1rem;">
+                  <label class="text-xs font-semibold text-muted" style="display: block; margin-bottom: 0.25rem;">Personal Notes:</label>
+                  <div class="flex gap-2">
+                    <input type="text" id="note-input-${schemeId}" class="form-input text-xs" style="padding: 0.4rem 0.65rem;" value="${item.notes || ''}" placeholder="Add notes (e.g. appointment date, missing certificate)...">
+                    <button onclick="saveNote(${schemeId})" class="btn btn-secondary btn-sm" style="flex-shrink: 0;">Save</button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="flex gap-2">
+                <a href="/scheme.html?slug=${s ? s.slug : '#'}" class="btn btn-secondary btn-sm" style="flex: 1;">View Details</a>
+                <a href="/app/checklist.html?scheme=${schemeId}" class="btn btn-primary btn-sm" style="flex: 1;">Document Checklist</a>
+              </div>
+            </div>
+          `;
+        }).join('');
+      } catch (err) {
+        container.innerHTML = '<p class="text-muted">Unable to load saved schemes. Check backend server.</p>';
+      }
+    }
+
+    async function saveNote(schemeId) {
+      const input = document.getElementById(`note-input-${schemeId}`);
+      const notes = input.value.trim();
+      try {
+        await window.api.patch(`/saved/${schemeId}`, { notes });
+        window.showToast('Note updated successfully!', 'success');
+      } catch (err) {
+        // Handled by api.js
+      }
+    }
+
+    async function removeBookmark(schemeId) {
+      if (!confirm('Remove this scheme from your bookmarks?')) return;
+      try {
+        await window.api.delete(`/saved/${schemeId}`);
+        window.showToast('Scheme removed from bookmarks.', 'info');
+        document.getElementById(`saved-item-${schemeId}`)?.remove();
+      } catch (err) {
+        // Handled by api.js
+      }
+    }
+  </script>
+</body>
+</html>

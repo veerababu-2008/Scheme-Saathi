@@ -1,0 +1,446 @@
+[
+  {
+    "name": "PM-KISAN Samman Nidhi",
+    "name_te": "పీఎం-కిసాన్ సమ్మాన్ నిధి",
+    "name_hi": "पीएम-किसान सम्मान निधि",
+    "slug": "pm-kisan-samman-nidhi",
+    "description": "Income support of ₹6,000 per year in three equal instalments to small and marginal farmer families having combined landholding up to 2 hectares.",
+    "description_te": "2 హెక్టార్ల వరకు భూమి ఉన్న చిన్న మరియు సన్నకారు రైతు కుటుంబాలకు సంవత్సరానికి ₹6,000 ఆదాయ మద్దతు.",
+    "description_hi": "2 हेक्टेयर तक भूमि वाले छोटे और सीमांत किसान परिवारों को प्रति वर्ष ₹6,000 की आय सहायता।",
+    "benefits": "₹6,000 per year in three instalments of ₹2,000 each, directly credited to bank account.",
+    "benefits_te": "సంవత్సరానికి ₹6,000, ₹2,000 చొప్పున మూడు విడతలుగా నేరుగా బ్యాంకు ఖాతాలో జమ.",
+    "benefits_hi": "₹6,000 प्रति वर्ष, ₹2,000 की तीन किस्तों में सीधे बैंक खाते में।",
+    "level": "central",
+    "state": null,
+    "department": "Department of Agriculture & Farmers Welfare",
+    "ministry": "Ministry of Agriculture & Farmers Welfare",
+    "apply_url": "https://pmkisan.gov.in",
+    "official_url": "https://pmkisan.gov.in",
+    "verification_status": "demo",
+    "max_benefit_amount": 6000,
+    "categories": ["agriculture"],
+    "documents": [
+      {"document_name": "Aadhaar Card", "document_name_te": "ఆధార్ కార్డ్", "document_name_hi": "आधार कार्ड", "is_mandatory": true, "description": "For identity verification and DBT"},
+      {"document_name": "Land Records / Khasra-Khatauni", "document_name_te": "భూ రికార్డులు", "document_name_hi": "भूमि रिकॉर्ड / खसरा-खतौनी", "is_mandatory": true, "description": "Proof of land ownership (up to 2 hectares)"},
+      {"document_name": "Bank Passbook / Cancelled Cheque", "document_name_te": "బ్యాంక్ పాస్ బుక్", "document_name_hi": "बैंक पासबुक / कैंसिल चेक", "is_mandatory": true, "description": "For direct benefit transfer"}
+    ],
+    "sources": [
+      {"source_type": "url", "title": "PM-KISAN Official Portal", "url": "https://pmkisan.gov.in", "is_primary": true}
+    ],
+    "eligibility_rules": {
+      "op": "AND",
+      "rules": [
+        {"field": "occupation", "cmp": "in", "value": ["farmer", "agri_labour"], "mandatory": true},
+        {"field": "land_holding_acres", "cmp": "lte", "value": 4.94, "mandatory": true},
+        {"field": "has_bank_account", "cmp": "eq", "value": true, "mandatory": true}
+      ]
+    }
+  },
+  {
+    "name": "Pradhan Mantri Awas Yojana – Gramin",
+    "name_te": "ప్రధాన మంత్రి ఆవాస్ యోజన – గ్రామీణ",
+    "name_hi": "प्रधानमंत्री आवास योजना – ग्रामीण",
+    "slug": "pmay-gramin",
+    "description": "Financial assistance for construction of pucca houses with basic amenities to eligible rural households who are houseless or living in kutcha/dilapidated houses.",
+    "description_te": "పక్కా ఇళ్ళ నిర్మాణానికి ఆర్థిక సహాయం.",
+    "description_hi": "पक्के मकान बनाने के लिए आर्थिक सहायता।",
+    "benefits": "₹1,20,000 in plain areas and ₹1,30,000 in hilly/difficult areas for house construction.",
+    "benefits_te": "సమతల ప్రాంతాల్లో ₹1,20,000 మరియు కొండ ప్రాంతాల్లో ₹1,30,000.",
+    "benefits_hi": "समतल क्षेत्रों में ₹1,20,000 और पहाड़ी क्षेत्रों में ₹1,30,000।",
+    "level": "central",
+    "state": null,
+    "department": "Department of Rural Development",
+    "ministry": "Ministry of Rural Development",
+    "apply_url": "https://pmaymis.gov.in",
+    "official_url": "https://pmaymis.gov.in",
+    "verification_status": "demo",
+    "max_benefit_amount": 130000,
+    "categories": ["housing"],
+    "documents": [
+      {"document_name": "Aadhaar Card", "document_name_te": "ఆధార్ కార్డ్", "document_name_hi": "आधार कार्ड", "is_mandatory": true, "description": "Identity verification"},
+      {"document_name": "BPL Certificate / SECC Data", "document_name_te": "BPL సర్టిఫికేట్", "document_name_hi": "BPL प्रमाणपत्र", "is_mandatory": true, "description": "Proof of economic status"},
+      {"document_name": "Bank Account Details", "document_name_te": "బ్యాంక్ ఖాతా వివరాలు", "document_name_hi": "बैंक खाता विवरण", "is_mandatory": true, "description": "For benefit transfer"}
+    ],
+    "sources": [
+      {"source_type": "url", "title": "PMAY-G Official Portal", "url": "https://pmaymis.gov.in", "is_primary": true}
+    ],
+    "eligibility_rules": {
+      "op": "AND",
+      "rules": [
+        {"field": "is_bpl", "cmp": "eq", "value": true, "mandatory": true},
+        {"field": "has_bank_account", "cmp": "eq", "value": true, "mandatory": true},
+        {"field": "annual_income", "cmp": "lte", "value": 300000, "mandatory": false}
+      ]
+    }
+  },
+  {
+    "name": "Ayushman Bharat – Pradhan Mantri Jan Arogya Yojana",
+    "name_te": "ఆయుష్మాన్ భారత్ – పీఎం-జేఏవై",
+    "name_hi": "आयुष्मान भारत – पीएम-जय",
+    "slug": "ayushman-bharat-pmjay",
+    "description": "Health insurance coverage of ₹5 lakh per family per year for secondary and tertiary hospitalisation to economically vulnerable families.",
+    "description_te": "ఆర్థికంగా బలహీన కుటుంబాలకు సంవత్సరానికి ₹5 లక్షల ఆరోగ్య భీమా.",
+    "description_hi": "आर्थिक रूप से कमजोर परिवारों को प्रति वर्ष ₹5 लाख का स्वास्थ्य बीमा।",
+    "benefits": "₹5,00,000 health insurance per family per year covering hospitalisation, surgeries, and treatments at empanelled hospitals.",
+    "benefits_te": "కుటుంబానికి సంవత్సరానికి ₹5,00,000 ఆరోగ్య భీమా.",
+    "benefits_hi": "प्रति परिवार प्रति वर्ष ₹5,00,000 का स्वास्थ्य बीमा।",
+    "level": "central",
+    "state": null,
+    "department": "National Health Authority",
+    "ministry": "Ministry of Health & Family Welfare",
+    "apply_url": "https://pmjay.gov.in",
+    "official_url": "https://pmjay.gov.in",
+    "verification_status": "demo",
+    "max_benefit_amount": 500000,
+    "categories": ["health"],
+    "documents": [
+      {"document_name": "Aadhaar Card / Ration Card", "document_name_te": "ఆధార్ / రేషన్ కార్డ్", "document_name_hi": "आधार / राशन कार्ड", "is_mandatory": true, "description": "Identity verification"},
+      {"document_name": "SECC / BPL Certificate", "document_name_te": "SECC / BPL సర్టిఫికేట్", "document_name_hi": "SECC / BPL प्रमाणपत्र", "is_mandatory": true, "description": "To verify SECC inclusion"}
+    ],
+    "sources": [
+      {"source_type": "url", "title": "PM-JAY Official Portal", "url": "https://pmjay.gov.in", "is_primary": true}
+    ],
+    "eligibility_rules": {
+      "op": "AND",
+      "rules": [
+        {"field": "annual_income", "cmp": "lte", "value": 300000, "mandatory": true},
+        {"field": "is_bpl", "cmp": "eq", "value": true, "mandatory": false}
+      ]
+    }
+  },
+  {
+    "name": "PM Ujjwala Yojana 2.0",
+    "name_te": "పీఎం ఉజ్జ్వల యోజన 2.0",
+    "name_hi": "पीएम उज्ज्वला योजना 2.0",
+    "slug": "pm-ujjwala-yojana",
+    "description": "Free LPG connections to women from BPL households, including free first refill and stove, to replace unclean cooking fuels.",
+    "description_te": "BPL కుటుంబాల మహిళలకు ఉచిత LPG కనెక్షన్లు.",
+    "description_hi": "BPL परिवारों की महिलाओं को मुफ्त LPG कनेक्शन।",
+    "benefits": "Free LPG connection (₹1,600 subsidy), first refill and stove provided free.",
+    "benefits_te": "ఉచిత LPG కనెక్షన్ (₹1,600 సబ్సిడీ), మొదటి రీఫిల్ మరియు స్టవ్ ఉచితం.",
+    "benefits_hi": "मुफ्त LPG कनेक्शन (₹1,600 सब्सिडी), पहला रिफिल और स्टोव मुफ्त।",
+    "level": "central",
+    "state": null,
+    "department": "Ministry of Petroleum & Natural Gas",
+    "ministry": "Ministry of Petroleum & Natural Gas",
+    "apply_url": "https://www.pmujjwalayojana.com",
+    "official_url": "https://www.pmujjwalayojana.com",
+    "verification_status": "demo",
+    "max_benefit_amount": 1600,
+    "categories": ["women", "social_security"],
+    "documents": [
+      {"document_name": "BPL Ration Card / BPL Certificate", "document_name_te": "BPL రేషన్ కార్డ్", "document_name_hi": "BPL राशन कार्ड", "is_mandatory": true, "description": "Proof of BPL status"},
+      {"document_name": "Aadhaar Card", "document_name_te": "ఆధార్ కార్డ్", "document_name_hi": "आधार कार्ड", "is_mandatory": true, "description": "Identity proof"},
+      {"document_name": "Passport Size Photo", "document_name_te": "పాస్‌పోర్ట్ సైజ్ ఫోటో", "document_name_hi": "पासपोर्ट साइज़ फोटो", "is_mandatory": true, "description": "Recent photograph"}
+    ],
+    "sources": [
+      {"source_type": "url", "title": "Ujjwala Yojana Portal", "url": "https://www.pmujjwalayojana.com", "is_primary": true}
+    ],
+    "eligibility_rules": {
+      "op": "AND",
+      "rules": [
+        {"field": "gender", "cmp": "eq", "value": "female", "mandatory": true},
+        {"field": "is_bpl", "cmp": "eq", "value": true, "mandatory": true},
+        {"field": "age", "cmp": "gte", "value": 18, "mandatory": true}
+      ]
+    }
+  },
+  {
+    "name": "Post-Matric Scholarship for SC Students",
+    "name_te": "ఎస్సీ విద్యార్థులకు పోస్ట్-మెట్రిక్ స్కాలర్‌షిప్",
+    "name_hi": "एससी छात्रों के लिए पोस्ट-मैट्रिक छात्रवृत्ति",
+    "slug": "post-matric-scholarship-sc",
+    "description": "Scholarship for Scheduled Caste students studying at post-matriculation or post-secondary level to support tuition, maintenance, and other allowances.",
+    "description_te": "పోస్ట్-మెట్రిక్ స్థాయిలో చదువుతున్న SC విద్యార్థులకు స్కాలర్‌షిప్.",
+    "description_hi": "पोस्ट-मैट्रिक स्तर पर पढ़ रहे अनुसूचित जाति के छात्रों के लिए छात्रवृत्ति।",
+    "benefits": "Full tuition fee waiver, maintenance allowance, book grant, and study tour charges as per government norms.",
+    "benefits_te": "పూర్తి ట్యూషన్ ఫీజు మినహాయింపు, నిర్వహణ భత్యం, పుస్తక గ్రాంట్.",
+    "benefits_hi": "पूर्ण ट्यूशन फीस माफी, रखरखाव भत्ता, पुस्तक अनुदान।",
+    "level": "central",
+    "state": null,
+    "department": "Department of Social Justice & Empowerment",
+    "ministry": "Ministry of Social Justice & Empowerment",
+    "apply_url": "https://scholarships.gov.in",
+    "official_url": "https://scholarships.gov.in",
+    "verification_status": "demo",
+    "max_benefit_amount": null,
+    "categories": ["education", "minority"],
+    "documents": [
+      {"document_name": "Caste Certificate (SC)", "document_name_te": "కులం సర్టిఫికేట్ (SC)", "document_name_hi": "जाति प्रमाणपत्र (SC)", "is_mandatory": true, "description": "Issued by competent authority"},
+      {"document_name": "Income Certificate", "document_name_te": "ఆదాయ ధృవీకరణ పత్రం", "document_name_hi": "आय प्रमाणपत्र", "is_mandatory": true, "description": "Family annual income proof"},
+      {"document_name": "Previous Year Marksheet", "document_name_te": "గత సంవత్సరం మార్క్‌షీట్", "document_name_hi": "पिछले वर्ष की मार्कशीट", "is_mandatory": true, "description": "Academic record"},
+      {"document_name": "Bank Account Details", "document_name_te": "బ్యాంక్ ఖాతా వివరాలు", "document_name_hi": "बैंक खाता विवरण", "is_mandatory": true, "description": "For scholarship disbursal"}
+    ],
+    "sources": [
+      {"source_type": "url", "title": "National Scholarship Portal", "url": "https://scholarships.gov.in", "is_primary": true}
+    ],
+    "eligibility_rules": {
+      "op": "AND",
+      "rules": [
+        {"field": "category", "cmp": "eq", "value": "SC", "mandatory": true},
+        {"field": "annual_income", "cmp": "lte", "value": 250000, "mandatory": true},
+        {"field": "education_level", "cmp": "in", "value": ["higher_secondary", "diploma", "graduate", "post_graduate", "doctorate"], "mandatory": true}
+      ]
+    }
+  },
+  {
+    "name": "e-Shram Card (Unorganised Workers)",
+    "name_te": "ఇ-శ్రమ్ కార్డ్ (అసంఘటిత కార్మికులు)",
+    "name_hi": "ई-श्रम कार्ड (असंगठित श्रमिक)",
+    "slug": "e-shram-card",
+    "description": "National database registration for unorganised workers providing a unique UAN (Universal Account Number) and enabling access to social security schemes.",
+    "description_te": "అసంఘటిత కార్మికుల జాతీయ డేటాబేస్ నమోదు.",
+    "description_hi": "असंगठित श्रमिकों का राष्ट्रीय डेटाबेस पंजीकरण।",
+    "benefits": "Accidental insurance of ₹2,00,000 (death) and ₹1,00,000 (partial disability), plus access to linked welfare schemes.",
+    "benefits_te": "₹2,00,000 (మరణం) మరియు ₹1,00,000 (పాక్షిక వైకల్యం) ప్రమాద భీమా.",
+    "benefits_hi": "₹2,00,000 (मृत्यु) और ₹1,00,000 (आंशिक विकलांगता) दुर्घटना बीमा।",
+    "level": "central",
+    "state": null,
+    "department": "Ministry of Labour & Employment",
+    "ministry": "Ministry of Labour & Employment",
+    "apply_url": "https://eshram.gov.in",
+    "official_url": "https://eshram.gov.in",
+    "verification_status": "demo",
+    "max_benefit_amount": 200000,
+    "categories": ["employment", "social_security"],
+    "documents": [
+      {"document_name": "Aadhaar Card", "document_name_te": "ఆధార్ కార్డ్", "document_name_hi": "आधार कार्ड", "is_mandatory": true, "description": "For UAN generation"},
+      {"document_name": "Bank Account (linked to Aadhaar)", "document_name_te": "బ్యాంక్ ఖాతా (ఆధార్ అనుసంధానం)", "document_name_hi": "बैंक खाता (आधार से लिंक)", "is_mandatory": true, "description": "For benefit transfer"}
+    ],
+    "sources": [
+      {"source_type": "url", "title": "e-Shram Portal", "url": "https://eshram.gov.in", "is_primary": true}
+    ],
+    "eligibility_rules": {
+      "op": "AND",
+      "rules": [
+        {"field": "age", "cmp": "between", "value": [16, 59], "mandatory": true},
+        {"field": "annual_income", "cmp": "lte", "value": 200000, "mandatory": false},
+        {"field": "has_bank_account", "cmp": "eq", "value": true, "mandatory": true}
+      ]
+    }
+  },
+  {
+    "name": "MGNREGA – Mahatma Gandhi National Rural Employment Guarantee",
+    "name_te": "మహాత్మా గాంధీ NREGA",
+    "name_hi": "महात्मा गांधी नरेगा",
+    "slug": "mgnrega",
+    "description": "Guarantees 100 days of wage employment per financial year to every rural household whose adult members volunteer to do unskilled manual work.",
+    "description_te": "ప్రతి గ్రామీణ కుటుంబానికి సంవత్సరానికి 100 రోజుల వేతన ఉపాధి హామీ.",
+    "description_hi": "हर ग्रामीण परिवार को प्रति वर्ष 100 दिनों के वेतन रोजगार की गारंटी।",
+    "benefits": "100 days of guaranteed employment at state minimum wage rates; unemployment allowance if work not provided within 15 days.",
+    "benefits_te": "రాష్ట్ర కనీస వేతన రేట్ల వద్ద 100 రోజుల హామీ ఉపాధి.",
+    "benefits_hi": "राज्य न्यूनतम वेतन दरों पर 100 दिनों का गारंटीशुदा रोजगार।",
+    "level": "central",
+    "state": null,
+    "department": "Department of Rural Development",
+    "ministry": "Ministry of Rural Development",
+    "apply_url": "https://nrega.nic.in",
+    "official_url": "https://nrega.nic.in",
+    "verification_status": "demo",
+    "max_benefit_amount": null,
+    "categories": ["employment"],
+    "documents": [
+      {"document_name": "Job Card (MGNREGA)", "document_name_te": "జాబ్ కార్డ్ (MGNREGA)", "document_name_hi": "जॉब कार्ड (मनरेगा)", "is_mandatory": true, "description": "Register at Gram Panchayat to get job card"},
+      {"document_name": "Aadhaar Card", "document_name_te": "ఆధార్ కార్డ్", "document_name_hi": "आधार कार्ड", "is_mandatory": true, "description": "Identity verification"},
+      {"document_name": "Bank Account / Post Office Account", "document_name_te": "బ్యాంక్ / పోస్ట్ ఆఫీస్ ఖాతా", "document_name_hi": "बैंक / डाकघर खाता", "is_mandatory": true, "description": "For wage payment"}
+    ],
+    "sources": [
+      {"source_type": "url", "title": "MGNREGA Official Portal", "url": "https://nrega.nic.in", "is_primary": true}
+    ],
+    "eligibility_rules": {
+      "op": "AND",
+      "rules": [
+        {"field": "age", "cmp": "gte", "value": 18, "mandatory": true},
+        {"field": "has_bank_account", "cmp": "eq", "value": true, "mandatory": false}
+      ]
+    }
+  },
+  {
+    "name": "Rythu Bandhu Investment Support",
+    "name_te": "రైతు బంధు పెట్టుబడి సహాయం",
+    "name_hi": "रायथू बंधु निवेश सहायता",
+    "slug": "rythu-bandhu-telangana",
+    "description": "Investment support of ₹10,000 per acre per year (₹5,000 each in Rabi and Kharif seasons) for all land-owning farmers in Telangana.",
+    "description_te": "తెలంగాణలో భూమి ఉన్న అన్ని రైతులకు ఎకరానికి సంవత్సరానికి ₹10,000 పెట్టుబడి సహాయం.",
+    "description_hi": "तेलंगाना में भूमि वाले सभी किसानों को प्रति एकड़ प्रति वर्ष ₹10,000 निवेश सहायता।",
+    "benefits": "₹10,000 per acre per year (₹5,000 per season for Rabi and Kharif), direct bank transfer.",
+    "benefits_te": "ఎకరానికి సంవత్సరానికి ₹10,000 (సీజన్‌కు ₹5,000), నేరుగా బ్యాంక్ ట్రాన్స్ఫర్.",
+    "benefits_hi": "प्रति एकड़ प्रति वर्ष ₹10,000 (प्रति सीज़न ₹5,000), सीधे बैंक ट्रांसफर।",
+    "level": "state",
+    "state": "Telangana",
+    "department": "Department of Agriculture",
+    "ministry": null,
+    "apply_url": null,
+    "official_url": "https://treasury.telangana.gov.in/rythu-bandhu",
+    "verification_status": "demo",
+    "max_benefit_amount": null,
+    "categories": ["agriculture"],
+    "documents": [
+      {"document_name": "Land Passbook (Dharani)", "document_name_te": "భూ పాస్ బుక్ (ధరణి)", "document_name_hi": "भूमि पासबुक (धरणी)", "is_mandatory": true, "description": "Proof of land ownership in Telangana"},
+      {"document_name": "Aadhaar Card", "document_name_te": "ఆధార్ కార్డ్", "document_name_hi": "आधार कार्ड", "is_mandatory": true, "description": "Identity proof"},
+      {"document_name": "Bank Passbook", "document_name_te": "బ్యాంక్ పాస్ బుక్", "document_name_hi": "बैंक पासबुक", "is_mandatory": true, "description": "For benefit transfer"}
+    ],
+    "sources": [
+      {"source_type": "url", "title": "Telangana Rythu Bandhu", "url": "https://treasury.telangana.gov.in/rythu-bandhu", "is_primary": true}
+    ],
+    "eligibility_rules": {
+      "op": "AND",
+      "rules": [
+        {"field": "state", "cmp": "eq", "value": "Telangana", "mandatory": true},
+        {"field": "occupation", "cmp": "in", "value": ["farmer", "agri_labour"], "mandatory": true},
+        {"field": "land_holding_acres", "cmp": "gt", "value": 0, "mandatory": true}
+      ]
+    }
+  },
+  {
+    "name": "Aasara Pensions (Telangana)",
+    "name_te": "ఆసరా పెన్షన్లు (తెలంగాణ)",
+    "name_hi": "आसरा पेंशन (तेलंगाना)",
+    "slug": "aasara-pensions-telangana",
+    "description": "Monthly pension of ₹2,016 for old age, widows, weavers, toddy tappers, persons with disability, and others from vulnerable sections in Telangana.",
+    "description_te": "తెలంగాణలో వృద్ధులు, వితంతువులు, వికలాంగులకు నెలకు ₹2,016 పెన్షన్.",
+    "description_hi": "तेलंगाना में वृद्ध, विधवा, विकलांगों को ₹2,016 प्रतिमाह पेंशन।",
+    "benefits": "₹2,016 per month pension, credited directly to beneficiary's bank account.",
+    "benefits_te": "నెలకు ₹2,016 పెన్షన్, నేరుగా లబ్ధిదారుని బ్యాంక్ ఖాతాలో జమ.",
+    "benefits_hi": "₹2,016 प्रतिमाह पेंशन, सीधे लाभार्थी के बैंक खाते में।",
+    "level": "state",
+    "state": "Telangana",
+    "department": "Department of Women, Child & Disabled Welfare",
+    "ministry": null,
+    "apply_url": "https://aasara.telangana.gov.in",
+    "official_url": "https://aasara.telangana.gov.in",
+    "verification_status": "demo",
+    "max_benefit_amount": 24192,
+    "categories": ["pension", "social_security"],
+    "documents": [
+      {"document_name": "Aadhaar Card", "document_name_te": "ఆధార్ కార్డ్", "document_name_hi": "आधार कार्ड", "is_mandatory": true, "description": "Identity proof"},
+      {"document_name": "Age Proof / Birth Certificate", "document_name_te": "వయస్సు ధృవీకరణ", "document_name_hi": "आयु प्रमाण", "is_mandatory": true, "description": "For old age pension (57+ years)"},
+      {"document_name": "Ration Card", "document_name_te": "రేషన్ కార్డ్", "document_name_hi": "राशन कार्ड", "is_mandatory": false, "description": "Address proof"},
+      {"document_name": "Bank Passbook", "document_name_te": "బ్యాంక్ పాస్ బుక్", "document_name_hi": "बैंक पासबुक", "is_mandatory": true, "description": "For pension credit"}
+    ],
+    "sources": [
+      {"source_type": "url", "title": "Aasara Pensions Portal", "url": "https://aasara.telangana.gov.in", "is_primary": true}
+    ],
+    "eligibility_rules": {
+      "op": "AND",
+      "rules": [
+        {"field": "state", "cmp": "eq", "value": "Telangana", "mandatory": true},
+        {"field": "age", "cmp": "gte", "value": 57, "mandatory": true},
+        {"field": "annual_income", "cmp": "lte", "value": 150000, "mandatory": false},
+        {"field": "has_bank_account", "cmp": "eq", "value": true, "mandatory": true}
+      ]
+    }
+  },
+  {
+    "name": "Sukanya Samriddhi Yojana",
+    "name_te": "సుకన్య సమృద్ధి యోజన",
+    "name_hi": "सुकन्या समृद्धि योजना",
+    "slug": "sukanya-samriddhi-yojana",
+    "description": "Government savings scheme for the girl child, offering high interest rates and tax benefits, to build a fund for education and marriage expenses.",
+    "description_te": "బాలికల కోసం ప్రభుత్వ పొదుపు పథకం, అధిక వడ్డీ రేట్లు మరియు పన్ను ప్రయోజనాలు.",
+    "description_hi": "बालिकाओं के लिए सरकारी बचत योजना, उच्च ब्याज दरें और कर लाभ।",
+    "benefits": "Interest rate ~8% p.a. (government-set), tax-free returns under Section 80C, maturity at girl's age 21.",
+    "benefits_te": "~8% వార్షిక వడ్డీ రేటు, సెక్షన్ 80C కింద పన్ను-రహిత రాబడి.",
+    "benefits_hi": "~8% वार्षिक ब्याज दर, धारा 80C के तहत कर-मुक्त रिटर्न।",
+    "level": "central",
+    "state": null,
+    "department": "Department of Posts / Banks",
+    "ministry": "Ministry of Finance",
+    "apply_url": null,
+    "official_url": "https://www.india.gov.in/sukanya-samriddhi-yojna",
+    "verification_status": "demo",
+    "max_benefit_amount": null,
+    "categories": ["women", "education"],
+    "documents": [
+      {"document_name": "Girl Child's Birth Certificate", "document_name_te": "బాలిక జన్మ ధృవీకరణ పత్రం", "document_name_hi": "बालिका का जन्म प्रमाणपत्र", "is_mandatory": true, "description": "Age proof for the girl child"},
+      {"document_name": "Parent/Guardian's Identity Proof", "document_name_te": "తల్లిదండ్రులు/సంరక్షకుని గుర్తింపు", "document_name_hi": "माता-पिता/अभिभावक का पहचान पत्र", "is_mandatory": true, "description": "Aadhaar/PAN of depositor"},
+      {"document_name": "Address Proof", "document_name_te": "చిరునామా నిరూపణ", "document_name_hi": "पता प्रमाण", "is_mandatory": true, "description": "Utility bill / Aadhaar / Passport"}
+    ],
+    "sources": [
+      {"source_type": "url", "title": "India.gov.in - SSY", "url": "https://www.india.gov.in/sukanya-samriddhi-yojna", "is_primary": true}
+    ],
+    "eligibility_rules": {
+      "op": "AND",
+      "rules": [
+        {"field": "gender", "cmp": "eq", "value": "female", "mandatory": true},
+        {"field": "age", "cmp": "lte", "value": 10, "mandatory": true}
+      ]
+    }
+  },
+  {
+    "name": "PM SVANidhi – Street Vendor's AtmaNirbhar Nidhi",
+    "name_te": "పీఎం స్వనిధి – వీధి వ్యాపారుల ఆత్మనిర్భర్ నిధి",
+    "name_hi": "पीएम स्वनिधि – स्ट्रीट वेंडर्स आत्मनिर्भर निधि",
+    "slug": "pm-svanidhi",
+    "description": "Micro-credit facility providing working capital loan up to ₹50,000 to street vendors to restart their businesses, with interest subsidy.",
+    "description_te": "వీధి వ్యాపారులకు ₹50,000 వరకు వర్కింగ్ క్యాపిటల్ రుణం.",
+    "description_hi": "स्ट्रीट वेंडरों को ₹50,000 तक का कार्यशील पूंजी ऋण।",
+    "benefits": "Working capital loan: ₹10,000 (1st), ₹20,000 (2nd), ₹50,000 (3rd tranche); 7% interest subsidy on timely repayment.",
+    "benefits_te": "వర్కింగ్ క్యాపిటల్ రుణం: ₹10,000 (1వ), ₹20,000 (2వ), ₹50,000 (3వ); సమయానికి తిరిగి చెల్లించిన 7% వడ్డీ సబ్సిడీ.",
+    "benefits_hi": "कार्यशील पूंजी ऋण: ₹10,000 (1st), ₹20,000 (2nd), ₹50,000 (3rd); समय पर भुगतान पर 7% ब्याज सब्सिडी।",
+    "level": "central",
+    "state": null,
+    "department": "Ministry of Housing & Urban Affairs",
+    "ministry": "Ministry of Housing & Urban Affairs",
+    "apply_url": "https://pmsvanidhi.mohua.gov.in",
+    "official_url": "https://pmsvanidhi.mohua.gov.in",
+    "verification_status": "demo",
+    "max_benefit_amount": 50000,
+    "categories": ["employment", "startup"],
+    "documents": [
+      {"document_name": "Certificate of Vending / Letter of Recommendation", "document_name_te": "వెండింగ్ సర్టిఫికేట్", "document_name_hi": "वेंडिंग प्रमाणपत्र", "is_mandatory": true, "description": "From ULB / Town Vending Committee"},
+      {"document_name": "Aadhaar Card", "document_name_te": "ఆధార్ కార్డ్", "document_name_hi": "आधार कार्ड", "is_mandatory": true, "description": "Identity proof"},
+      {"document_name": "Bank Account Details", "document_name_te": "బ్యాంక్ ఖాతా వివరాలు", "document_name_hi": "बैंक खाता विवरण", "is_mandatory": true, "description": "For loan disbursal"}
+    ],
+    "sources": [
+      {"source_type": "url", "title": "PM SVANidhi Portal", "url": "https://pmsvanidhi.mohua.gov.in", "is_primary": true}
+    ],
+    "eligibility_rules": {
+      "op": "AND",
+      "rules": [
+        {"field": "occupation", "cmp": "in", "value": ["street_vendor", "hawker", "self_employed"], "mandatory": true},
+        {"field": "age", "cmp": "gte", "value": 18, "mandatory": true},
+        {"field": "has_bank_account", "cmp": "eq", "value": true, "mandatory": true}
+      ]
+    }
+  },
+  {
+    "name": "Kalyana Lakshmi / Shaadi Mubarak (Telangana)",
+    "name_te": "కళ్యాణ లక్ష్మి / షాది ముబారక్ (తెలంగాణ)",
+    "name_hi": "कल्याण लक्ष्मी / शादी मुबारक (तेलंगाना)",
+    "slug": "kalyana-lakshmi-telangana",
+    "description": "Financial assistance of ₹1,00,116 to the bride's family at the time of marriage for women from economically weaker sections in Telangana.",
+    "description_te": "తెలంగాణలో ఆర్థికంగా బలహీన వర్గాల మహిళలకు వివాహ సమయంలో ₹1,00,116 ఆర్థిక సహాయం.",
+    "description_hi": "तेलंगाना में आर्थिक रूप से कमजोर वर्ग की महिलाओं को विवाह के समय ₹1,00,116 की आर्थिक सहायता।",
+    "benefits": "₹1,00,116 one-time grant at the time of marriage.",
+    "benefits_te": "వివాహ సమయంలో ₹1,00,116 ఒకసారి మంజూరు.",
+    "benefits_hi": "विवाह के समय ₹1,00,116 एकमुश्त अनुदान।",
+    "level": "state",
+    "state": "Telangana",
+    "department": "Department of Women, Child & Disabled Welfare",
+    "ministry": null,
+    "apply_url": "https://telanganaepass.cgg.gov.in",
+    "official_url": "https://telanganaepass.cgg.gov.in",
+    "verification_status": "demo",
+    "max_benefit_amount": 100116,
+    "categories": ["women", "social_security"],
+    "documents": [
+      {"document_name": "Bride's Aadhaar Card", "document_name_te": "వధువు ఆధార్ కార్డ్", "document_name_hi": "दुल्हन का आधार कार्ड", "is_mandatory": true, "description": "Identity proof of bride"},
+      {"document_name": "Income Certificate", "document_name_te": "ఆదాయ ధృవీకరణ పత్రం", "document_name_hi": "आय प्रमाणपत्र", "is_mandatory": true, "description": "Family income < ₹2,00,000"},
+      {"document_name": "Age Proof of Bride", "document_name_te": "వధువు వయస్సు నిరూపణ", "document_name_hi": "दुल्हन का आयु प्रमाण", "is_mandatory": true, "description": "Must be 18+ years"},
+      {"document_name": "Bank Account (Bride's name)", "document_name_te": "బ్యాంక్ ఖాతా (వధువు పేరు)", "document_name_hi": "बैंक खाता (दुल्हन के नाम)", "is_mandatory": true, "description": "For benefit transfer"}
+    ],
+    "sources": [
+      {"source_type": "url", "title": "Telangana ePASS", "url": "https://telanganaepass.cgg.gov.in", "is_primary": true}
+    ],
+    "eligibility_rules": {
+      "op": "AND",
+      "rules": [
+        {"field": "state", "cmp": "eq", "value": "Telangana", "mandatory": true},
+        {"field": "gender", "cmp": "eq", "value": "female", "mandatory": true},
+        {"field": "age", "cmp": "gte", "value": 18, "mandatory": true},
+        {"field": "annual_income", "cmp": "lte", "value": 200000, "mandatory": true}
+      ]
+    }
+  }
+]

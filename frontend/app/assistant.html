@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Saathi AI Assistant — SchemeSaathi AI</title>
+  <link rel="stylesheet" href="/assets/css/tokens.css">
+  <link rel="stylesheet" href="/assets/css/base.css">
+  <link rel="stylesheet" href="/assets/css/components.css">
+  <link rel="stylesheet" href="/assets/css/navbar.css">
+  <link rel="stylesheet" href="/assets/css/chat.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400..700;1,9..40,400..700&family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Manrope:wght@400..800&family=Noto+Sans+Devanagari:wght@400;600;700&family=Noto+Sans+Telugu:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    .chat-layout {
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      height: calc(100vh - 140px);
+      max-width: 1100px;
+      margin: 1.5rem auto;
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      box-shadow: var(--shadow-md);
+    }
+    @media (max-width: 768px) {
+      .chat-layout {
+        grid-template-columns: 1fr;
+        height: calc(100vh - 120px);
+        margin: 0;
+        border-radius: 0;
+        border: none;
+      }
+      .chat-sidebar {
+        display: none;
+      }
+    }
+    .chat-sidebar {
+      background: var(--parchment-50);
+      border-right: 1px solid var(--color-border);
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+    }
+    .session-item {
+      padding: 0.65rem 0.85rem;
+      border-radius: var(--radius-md);
+      font-size: var(--text-xs);
+      color: var(--color-heading);
+      cursor: pointer;
+      margin-bottom: 0.4rem;
+      transition: background 0.2s;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .session-item:hover, .session-item.active {
+      background: var(--color-surface);
+      font-weight: 600;
+      border-left: 3px solid var(--color-action);
+    }
+    .quick-prompts {
+      display: flex;
+      gap: 0.5rem;
+      padding: 0.75rem 1.5rem 0;
+      overflow-x: auto;
+      flex-wrap: nowrap;
+    }
+    .quick-pill {
+      font-size: 0.75rem;
+      background: var(--parchment-50);
+      border: 1px solid var(--color-border);
+      padding: 0.35rem 0.75rem;
+      border-radius: var(--radius-pill);
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .quick-pill:hover {
+      background: var(--color-surface);
+      border-color: var(--aubergine-600);
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header"></header>
+
+  <main class="chat-layout">
+    <!-- Chat Sessions Sidebar -->
+    <aside class="chat-sidebar">
+      <button id="new-chat-btn" class="btn btn-primary btn-sm" style="width: 100%; margin-bottom: 1rem;">
+        + New Conversation
+      </button>
+      <div class="text-xs font-semibold text-muted" style="margin-bottom: 0.5rem; text-transform: uppercase;">
+        Previous Sessions
+      </div>
+      <div id="sessions-list" style="flex: 1; overflow-y: auto;">
+        <!-- Populated by JS -->
+      </div>
+      <div style="padding-top: 1rem; border-top: 1px solid var(--color-border); font-size: 0.72rem; color: var(--ink-muted);">
+        Saathi answers using verified gazettes and official guidelines.
+      </div>
+    </aside>
+
+    <!-- Main Chat Window -->
+    <section class="flex flex-col" style="height: 100%;">
+      <!-- Header -->
+      <div class="chat-header">
+        <div class="flex items-center gap-2">
+          <div class="avatar avatar-assistant">🤖</div>
+          <div>
+            <strong style="font-size: 0.95rem;">Saathi AI Civic Assistant</strong>
+            <div class="text-xs text-muted">RAG Grounded &bull; Multi-language (EN / TE / HI)</div>
+          </div>
+        </div>
+        <div>
+          <select id="chat-lang-select" class="lang-select">
+            <option value="en">English (EN)</option>
+            <option value="te">తెలుగు (TE)</option>
+            <option value="hi">हिन्दी (HI)</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Quick prompts -->
+      <div class="quick-prompts">
+        <button class="quick-pill" onclick="sendQuickPrompt('What are the eligibility criteria for PM-KISAN?')">PM-KISAN eligibility?</button>
+        <button class="quick-pill" onclick="sendQuickPrompt('రైతు బంధు పథకానికి ఏ పత్రాలు కావాలి?')">రైతు బంధు పత్రాలు?</button>
+        <button class="quick-pill" onclick="sendQuickPrompt('आयुष्मान भारत योजना के तहत कितना कवर मिलता है?')">आयुष्मान भारत कवर?</button>
+      </div>
+
+      <!-- Messages Stream -->
+      <div id="messages-container" class="chat-messages">
+        <div class="message-row assistant">
+          <div class="avatar avatar-assistant">🤖</div>
+          <div class="message-bubble">
+            <p><strong>Namaste! I am Saathi AI.</strong></p>
+            <p style="margin-top: 0.35rem;">
+              Ask me anything about central or state government welfare schemes, required certificates, or eligibility criteria. How may I assist you today?
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Input Bar -->
+      <form id="chat-form" class="chat-input-bar">
+        <button type="button" id="voice-mic-btn" class="btn btn-secondary btn-icon" title="Speak your question (Voice Input)" style="flex-shrink: 0;" aria-label="Voice input">
+          🎙️
+        </button>
+        <input type="text" id="chat-input" class="chat-input" placeholder="Type or speak your question in Telugu, Hindi, or English..." required autocomplete="off">
+        <button type="submit" id="send-btn" class="btn btn-primary" style="border-radius: var(--radius-pill); padding: 0.65rem 1.25rem;">
+          Send
+        </button>
+      </form>
+    </section>
+  </main>
+
+  <footer class="site-footer"></footer>
+
+  <script src="/assets/js/translations.js"></script>
+  <script src="/assets/js/i18n.js"></script>
+  <script src="/assets/js/api.js"></script>
+  <script src="/assets/js/auth.js"></script>
+  <script src="/assets/js/components.js"></script>
+  <script>
+    let currentSessionId = null;
+
+    async function loadSessions() {
+      if (!window.auth.isAuthenticated()) return;
+      try {
+        const res = await window.api.get('/chat/sessions');
+        const sessions = res.data || [];
+        const list = document.getElementById('sessions-list');
+        if (sessions.length === 0) {
+          list.innerHTML = '<p class="text-xs text-muted">No saved chats.</p>';
+          return;
+        }
+        list.innerHTML = sessions.map(s => `
+          <div class="session-item ${s.id === currentSessionId ? 'active' : ''}" onclick="switchSession(${s.id})">
+            ${s.title || 'Chat #' + s.id}
+          </div>
+        `).join('');
+      } catch (err) {}
+    }
+
+    async function createNewSession() {
+      if (!window.auth.isAuthenticated()) return;
+      const lang = document.getElementById('chat-lang-select').value;
+      try {
+        const res = await window.api.post('/chat/sessions', { language: lang });
+        currentSessionId = res.data.id;
+        document.getElementById('messages-container').innerHTML = `
+          <div class="message-row assistant">
+            <div class="avatar avatar-assistant">🤖</div>
+            <div class="message-bubble">
+              <p><strong>New Conversation Started.</strong></p>
+              <p style="margin-top: 0.35rem;">Ask any question about welfare schemes in ${lang.toUpperCase()}.</p>
+            </div>
+          </div>
+        `;
+        loadSessions();
+      } catch (err) {}
+    }
+
+    async function switchSession(sessionId) {
+      currentSessionId = sessionId;
+      loadSessions();
+      try {
+        const res = await window.api.get(`/chat/sessions/${sessionId}`);
+        const messages = res.data.messages || [];
+        const container = document.getElementById('messages-container');
+        container.innerHTML = '';
+
+        messages.forEach(m => {
+          appendMessage(m.role, m.content, m.sources_json);
+        });
+        container.scrollTop = container.scrollHeight;
+      } catch (err) {}
+    }
+
+    function appendMessage(role, content, sources) {
+      const container = document.getElementById('messages-container');
+      const row = document.createElement('div');
+      row.className = `message-row ${role}`;
+
+      let citationsHtml = '';
+      if (sources && sources.length > 0) {
+        citationsHtml = `
+          <div class="chat-citations">
+            ${sources.map(s => `<a href="${s.url || '#'}" target="_blank" rel="noopener" class="citation-chip">📄 ${s.title || 'Official Source'}</a>`).join('')}
+          </div>
+        `;
+      }
+
+      row.innerHTML = `
+        <div class="avatar ${role === 'assistant' ? 'avatar-assistant' : 'avatar-user'}">
+          ${role === 'assistant' ? '🤖' : '👤'}
+        </div>
+        <div class="message-bubble">
+          <div>${content.replace(/\n/g, '<br>')}</div>
+          ${citationsHtml}
+        </div>
+      `;
+      container.appendChild(row);
+      container.scrollTop = container.scrollHeight;
+    }
+
+    function sendQuickPrompt(promptText) {
+      document.getElementById('chat-input').value = promptText;
+      document.getElementById('chat-form').dispatchEvent(new Event('submit'));
+    }
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      window.auth.requireAuth();
+      window.renderNavbar('assistant');
+      window.renderFooter();
+
+      await loadSessions();
+
+      // Check if prompt passed in URL query
+      const urlParams = new URLSearchParams(window.location.search);
+      const initialPrompt = urlParams.get('prompt');
+      if (initialPrompt) {
+        setTimeout(() => sendQuickPrompt(initialPrompt), 400);
+      }
+
+      // Voice input speech recognition
+      const micBtn = document.getElementById('voice-mic-btn');
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+      if (SpeechRecognition) {
+        const recognition = new SpeechRecognition();
+        recognition.continuous = false;
+        recognition.interimResults = false;
+
+        micBtn.addEventListener('click', () => {
+          const lang = document.getElementById('chat-lang-select').value;
+          const langCodes = { en: 'en-IN', te: 'te-IN', hi: 'hi-IN' };
+          recognition.lang = langCodes[lang] || 'en-IN';
+
+          try {
+            recognition.start();
+            micBtn.style.background = 'var(--vermilion-600)';
+            micBtn.style.color = '#fff';
+            window.showToast(`Listening in ${lang.toUpperCase()}... Speak now.`, 'info');
+          } catch (e) {
+            recognition.stop();
+          }
+        });
+
+        recognition.onresult = (event) => {
+          const transcript = event.results[0][0].transcript;
+          if (transcript) {
+            document.getElementById('chat-input').value = transcript;
+            window.showToast(`Heard: "${transcript}"`, 'success');
+          }
+        };
+
+        recognition.onend = () => {
+          micBtn.style.background = '';
+          micBtn.style.color = '';
+        };
+
+        recognition.onerror = () => {
+          micBtn.style.background = '';
+          micBtn.style.color = '';
+          window.showToast('Microphone access denied or timed out.', 'warning');
+        };
+      } else {
+        micBtn.title = 'Voice input not supported in this browser';
+        micBtn.style.opacity = '0.5';
+        micBtn.addEventListener('click', () => {
+          window.showToast('Voice input is supported in Chrome, Edge, and Safari.', 'warning');
+        });
+      }
+
+      document.getElementById('new-chat-btn').addEventListener('click', createNewSession);
+
+      document.getElementById('chat-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const input = document.getElementById('chat-input');
+        const text = input.value.trim();
+        if (!text) return;
+
+        input.value = '';
+        appendMessage('user', text);
+
+        // Append typing indicator
+        const container = document.getElementById('messages-container');
+        const typingEl = document.createElement('div');
+        typingEl.id = 'typing-indicator';
+        typingEl.className = 'message-row assistant';
+        typingEl.innerHTML = `
+          <div class="avatar avatar-assistant">🤖</div>
+          <div class="message-bubble typing-dots">
+            <div class="typing-dot"></div>
+            <div class="typing-dot"></div>
+            <div class="typing-dot"></div>
+          </div>
+        `;
+        container.appendChild(typingEl);
+        container.scrollTop = container.scrollHeight;
+
+        try {
+          if (!currentSessionId) {
+            const sessRes = await window.api.post('/chat/sessions', {
+              language: document.getElementById('chat-lang-select').value,
+            });
+            currentSessionId = sessRes.data.id;
+            loadSessions();
+          }
+
+          const res = await window.api.post(`/chat/sessions/${currentSessionId}/messages`, {
+            content: text,
+            language: document.getElementById('chat-lang-select').value,
+          });
+
+          typingEl.remove();
+          appendMessage('assistant', res.data.content, res.data.sources_json);
+        } catch (err) {
+          typingEl.remove();
+          appendMessage('assistant', 'Sorry, I encountered an issue processing your request. Please ensure the backend is running with Gemini configured.');
+        }
+      });
+    });
+  </script>
+</body>
+</html>

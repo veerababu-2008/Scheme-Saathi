@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document Checklist Tracker — SchemeSaathi AI</title>
+  <link rel="stylesheet" href="/assets/css/tokens.css">
+  <link rel="stylesheet" href="/assets/css/base.css">
+  <link rel="stylesheet" href="/assets/css/components.css">
+  <link rel="stylesheet" href="/assets/css/navbar.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400..700;1,9..40,400..700&family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Manrope:wght@400..800&display=swap" rel="stylesheet">
+  <style>
+    .doc-item {
+      padding: 1.25rem;
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .doc-item.collected {
+      border-left: 4px solid var(--jade-600);
+      background: var(--mist-sage);
+    }
+    .doc-item.not_applicable {
+      opacity: 0.6;
+      border-left: 4px solid var(--ink-muted);
+    }
+    @media print {
+      .site-header, .site-footer, .mobile-bottom-nav, .no-print, .btn, #scheme-picker-card {
+        display: none !important;
+      }
+      body {
+        background: #fff;
+        color: #000;
+        padding: 0;
+      }
+      .container-narrow {
+        max-width: 100%;
+        padding: 0;
+      }
+      .print-header {
+        display: block !important;
+        border-bottom: 2px solid #000;
+        padding-bottom: 1rem;
+        margin-bottom: 1.5rem;
+      }
+      .doc-item {
+        border: 1px solid #ccc;
+        page-break-inside: avoid;
+        margin-bottom: 0.75rem;
+      }
+    }
+    .print-header {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header"></header>
+
+  <main class="container-narrow" style="padding: 2.5rem 1.5rem 5rem;">
+    <!-- Printable Header (shown only when printing / saving as PDF) -->
+    <div class="print-header">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+        <h2 style="font-size: 1.5rem; margin: 0;">SchemeSaathi AI — Citizen Document Checklist</h2>
+        <span style="font-size: 0.85rem; color: #555;">MeeSeva / CSC Preparation</span>
+      </div>
+      <div id="print-scheme-info" style="font-size: 0.95rem; line-height: 1.5;"></div>
+      <div style="font-size: 0.75rem; color: #666; margin-top: 0.5rem;">
+        Notice: SchemeSaathi AI is an independent civic portal. Carry original documents along with photocopies.
+      </div>
+    </div>
+
+    <div style="margin-bottom: 2rem;">
+      <h1 style="font-size: 2.25rem; margin-bottom: 0.5rem;">Document Readiness Checklist</h1>
+      <p class="text-sm text-muted">Track certificates and paperwork before visiting the citizen service centre.</p>
+    </div>
+
+    <!-- Scheme Picker -->
+    <div id="scheme-picker-card" class="card" style="margin-bottom: 2rem;">
+      <label class="form-label" for="scheme-select">Select Welfare Scheme</label>
+      <select id="scheme-select" class="form-select">
+        <option value="">Loading schemes...</option>
+      </select>
+    </div>
+
+    <!-- Completion Header -->
+    <div id="progress-box" class="card" style="display: none; margin-bottom: 2rem;">
+      <div class="flex justify-between items-center" style="flex-wrap: wrap; gap: 1rem;">
+        <div>
+          <h3 id="scheme-name-heading" style="font-size: 1.25rem;">Scheme Checklist</h3>
+          <div id="doc-count-text" class="text-xs text-muted">0 of 0 collected</div>
+        </div>
+        <div class="flex items-center gap-2">
+          <div id="pct-badge" class="badge badge-amber" style="font-size: 1rem; padding: 0.4rem 0.85rem;">
+            0% Complete
+          </div>
+          <button onclick="window.print()" class="btn btn-secondary btn-sm no-print" title="Print or save as PDF">
+            🖨️ Print / Save PDF
+          </button>
+        </div>
+      </div>
+      <div style="width: 100%; height: 8px; background: var(--color-border); border-radius: var(--radius-pill); overflow: hidden; margin-top: 1rem;">
+        <div id="progress-bar-fill" style="height: 100%; background: var(--color-action); width: 0%; transition: width 0.3s ease;"></div>
+      </div>
+    </div>
+
+    <!-- Documents List -->
+    <div id="documents-container">
+      <div class="card text-center" style="padding: 3rem;">
+        <p class="text-muted text-sm">Please select a scheme above to view required documents.</p>
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer"></footer>
+
+  <script src="/assets/js/translations.js"></script>
+  <script src="/assets/js/i18n.js"></script>
+  <script src="/assets/js/api.js"></script>
+  <script src="/assets/js/auth.js"></script>
+  <script src="/assets/js/components.js"></script>
+  <script>
+    let currentSchemeId = null;
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      window.auth.requireAuth();
+      window.renderNavbar('checklist');
+      window.renderFooter();
+
+      try {
+        const res = await window.api.get('/schemes?per_page=50');
+        const list = res.data || [];
+        const select = document.getElementById('scheme-select');
+        select.innerHTML = '<option value="">-- Choose a scheme --</option>' + list.map(s => `
+          <option value="${s.id}">${s.name}</option>
+        `).join('');
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const preselect = urlParams.get('scheme');
+        if (preselect) {
+          select.value = preselect;
+          loadChecklist(preselect);
+        }
+
+        select.addEventListener('change', (e) => {
+          if (e.target.value) {
+            loadChecklist(e.target.value);
+          }
+        });
+      } catch (err) {}
+    });
+
+    async function loadChecklist(schemeId) {
+      currentSchemeId = schemeId;
+      const container = document.getElementById('documents-container');
+      container.innerHTML = '<div class="card text-center" style="padding: 2.5rem;"><div class="spinner" style="margin: 0 auto 0.5rem; border-color: var(--color-action);"></div><p class="text-muted text-sm">Loading document list...</p></div>';
+
+      try {
+        const res = await window.api.get(`/checklist/${schemeId}`);
+        const data = res.data;
+        const docs = data.documents || [];
+
+        document.getElementById('progress-box').style.display = 'block';
+        document.getElementById('scheme-name-heading').textContent = data.scheme_name || 'Scheme Checklist';
+        document.getElementById('pct-badge').textContent = `${data.completion_percentage}% Ready`;
+        document.getElementById('progress-bar-fill').style.width = `${data.completion_percentage}%`;
+        document.getElementById('doc-count-text').textContent = `${data.collected_count} of ${data.total_mandatory} mandatory certificates collected`;
+        document.getElementById('print-scheme-info').innerHTML = `
+          <strong>Scheme:</strong> ${data.scheme_name || 'Scheme #' + schemeId}<br>
+          <strong>Readiness Status:</strong> ${data.completion_percentage}% (${data.collected_count} / ${data.total_mandatory} Mandatory Collected)<br>
+          <strong>Generated on:</strong> ${new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
+        `;
+
+        if (docs.length === 0) {
+          container.innerHTML = '<div class="card text-center" style="padding: 2rem;"><p class="text-muted">No documents specified for this scheme.</p></div>';
+          return;
+        }
+
+        container.innerHTML = docs.map(d => `
+          <div class="doc-item ${d.status}">
+            <div>
+              <div class="flex items-center gap-2">
+                <strong>${d.document_name}</strong>
+                ${d.is_mandatory ? '<span class="badge badge-red" style="font-size: 0.65rem;">Mandatory</span>' : '<span class="badge badge-pending" style="font-size: 0.65rem;">Optional</span>'}
+              </div>
+              ${d.document_name_te ? `<div class="text-xs text-muted" style="margin-top: 0.2rem;">తెలుగు: ${d.document_name_te}</div>` : ''}
+              ${d.document_name_hi ? `<div class="text-xs text-muted">हिन्दी: ${d.document_name_hi}</div>` : ''}
+              ${d.description ? `<p class="text-xs text-muted" style="margin-top: 0.35rem;">${d.description}</p>` : ''}
+            </div>
+
+            <div class="flex gap-2">
+              <button onclick="updateDocStatus('${encodeURIComponent(d.document_name)}', 'collected')" class="btn ${d.status === 'collected' ? 'btn-primary' : 'btn-secondary'} btn-sm">
+                ${d.status === 'collected' ? '✓ Collected' : 'Mark Collected'}
+              </button>
+              <button onclick="updateDocStatus('${encodeURIComponent(d.document_name)}', 'not_applicable')" class="btn btn-subtle btn-sm">
+                N/A
+              </button>
+            </div>
+          </div>
+        `).join('');
+      } catch (err) {
+        container.innerHTML = '<p class="text-muted">Unable to load document checklist.</p>';
+      }
+    }
+
+    async function updateDocStatus(docName, status) {
+      if (!currentSchemeId) return;
+      try {
+        await window.api.put(`/checklist/${currentSchemeId}/${docName}`, { status });
+        loadChecklist(currentSchemeId);
+      } catch (err) {
+        // Handled by api.js
+      }
+    }
+  </script>
+</body>
+</html>

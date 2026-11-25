@@ -1,0 +1,164 @@
+/* ============================================================
+   SchemeSaathi AI — Saathi AI Chat Interface Styles
+   ============================================================ */
+
+.chat-container {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 120px);
+  max-width: 900px;
+  margin: 1.5rem auto;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-md);
+  overflow: hidden;
+}
+
+.chat-header {
+  padding: 1rem 1.5rem;
+  background-color: var(--color-bg-elevated);
+  border-bottom: 1px solid var(--color-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.chat-messages {
+  flex: 1;
+  padding: 1.5rem;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+/* Message Bubbles */
+.message-row {
+  display: flex;
+  gap: 0.75rem;
+  max-width: 85%;
+}
+
+.message-row.user {
+  align-self: flex-end;
+  flex-direction: row-reverse;
+}
+
+.message-row.assistant {
+  align-self: flex-start;
+}
+
+.avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-circle);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: var(--text-xs);
+  font-weight: var(--weight-bold);
+}
+
+.avatar-assistant {
+  background-color: var(--aubergine-800);
+  color: #fff;
+}
+
+.avatar-user {
+  background-color: var(--vermilion-600);
+  color: #fff;
+}
+
+.message-bubble {
+  padding: 0.9rem 1.25rem;
+  border-radius: var(--radius-lg);
+  font-size: var(--text-sm);
+  line-height: var(--leading-normal);
+  word-break: break-word;
+}
+
+.message-row.user .message-bubble {
+  background-color: var(--vermilion-600);
+  color: #fff;
+  border-bottom-right-radius: 4px;
+}
+
+.message-row.assistant .message-bubble {
+  background-color: var(--parchment-50);
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+  border-bottom-left-radius: 4px;
+}
+
+/* Citations & Sources inside chat */
+.chat-citations {
+  margin-top: 0.65rem;
+  padding-top: 0.65rem;
+  border-top: 1px dashed var(--color-border);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.citation-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  padding: 0.2rem 0.5rem;
+  border-radius: var(--radius-pill);
+  font-size: var(--text-xs);
+  color: var(--color-action);
+  text-decoration: none;
+}
+
+.citation-chip:hover {
+  background-color: var(--oxblood-100);
+}
+
+/* Typing Indicator */
+.typing-dots {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  padding: 0.5rem 0.75rem;
+}
+
+.typing-dot {
+  width: 6px;
+  height: 6px;
+  background: var(--ink-muted);
+  border-radius: 50%;
+  animation: bounce 1.4s infinite ease-in-out both;
+}
+.typing-dot:nth-child(1) { animation-delay: -0.32s; }
+.typing-dot:nth-child(2) { animation-delay: -0.16s; }
+
+@keyframes bounce {
+  0%, 80%, 100% { transform: scale(0); }
+  40% { transform: scale(1); }
+}
+
+/* Chat Input Bar */
+.chat-input-bar {
+  padding: 1rem 1.5rem;
+  border-top: 1px solid var(--color-border);
+  background-color: var(--color-surface);
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.chat-input {
+  flex: 1;
+  padding: 0.75rem 1rem;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-pill);
+  outline: none;
+}
+.chat-input:focus {
+  border-color: var(--aubergine-600);
+}

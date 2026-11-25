@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Discover Schemes — SchemeSaathi AI</title>
+  <link rel="stylesheet" href="/assets/css/tokens.css">
+  <link rel="stylesheet" href="/assets/css/base.css">
+  <link rel="stylesheet" href="/assets/css/components.css">
+  <link rel="stylesheet" href="/assets/css/navbar.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400..700;1,9..40,400..700&family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Manrope:wght@400..800&family=Noto+Sans+Devanagari:wght@400;600;700&family=Noto+Sans+Telugu:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    .catalog-layout {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 2rem;
+      padding: 2.5rem 0 4rem;
+    }
+    @media (max-width: 860px) {
+      .catalog-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+    .filter-panel {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      height: fit-content;
+    }
+    .filter-title {
+      font-size: var(--text-sm);
+      font-weight: var(--weight-bold);
+      margin-bottom: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--color-heading);
+    }
+    .filter-group {
+      margin-bottom: 1.5rem;
+      padding-bottom: 1.25rem;
+      border-bottom: 1px solid var(--color-border);
+    }
+    .filter-group:last-child {
+      margin-bottom: 0;
+      padding-bottom: 0;
+      border-bottom: none;
+    }
+    .filter-option {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: var(--text-sm);
+      margin-bottom: 0.5rem;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header"></header>
+
+  <main class="container">
+    <div style="padding-top: 2rem;">
+      <h1 style="font-size: 2.25rem; margin-bottom: 0.5rem;">Discover Government Schemes</h1>
+      <p class="text-muted text-sm">Explore verified social welfare initiatives across Central and State ministries.</p>
+    </div>
+
+    <div class="catalog-layout">
+      <!-- Filter Sidebar -->
+      <aside class="filter-panel">
+        <div class="flex items-center justify-between" style="margin-bottom: 1.25rem;">
+          <h2 style="font-size: 1.1rem;">Filters</h2>
+          <button id="reset-filters" class="btn btn-subtle btn-sm">Clear All</button>
+        </div>
+
+        <div class="filter-group">
+          <div class="filter-title">Search</div>
+          <input type="text" id="search-input" class="form-input text-sm" placeholder="Search keywords..." style="padding: 0.5rem 0.75rem;">
+        </div>
+
+        <div class="filter-group">
+          <div class="filter-title">Governance Level</div>
+          <label class="filter-option"><input type="radio" name="level" value="" checked> All Levels</label>
+          <label class="filter-option"><input type="radio" name="level" value="central"> Central Government</label>
+          <label class="filter-option"><input type="radio" name="level" value="state"> State Government</label>
+        </div>
+
+        <div class="filter-group">
+          <div class="filter-title">Category</div>
+          <select id="category-select" class="form-select text-sm">
+            <option value="">All Categories</option>
+            <option value="agriculture">Agriculture & Farmers</option>
+            <option value="health">Health & Medical</option>
+            <option value="education">Education & Scholarships</option>
+            <option value="housing">Housing & Urban</option>
+            <option value="women">Women & Child Welfare</option>
+            <option value="finance">Banking & Pension</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <div class="filter-title">State</div>
+          <select id="state-select" class="form-select text-sm">
+            <option value="">All States</option>
+            <option value="Telangana">Telangana</option>
+            <option value="Andhra Pradesh">Andhra Pradesh</option>
+            <option value="Karnataka">Karnataka</option>
+            <option value="Maharashtra">Maharashtra</option>
+            <option value="National">All-India (Central)</option>
+          </select>
+        </div>
+      </aside>
+
+      <!-- Main Scheme Results -->
+      <section>
+        <div class="flex items-center justify-between" style="margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+          <div id="results-count" class="text-sm text-muted">Showing schemes...</div>
+          <div class="flex items-center gap-2">
+            <label class="text-sm font-semibold">Sort By:</label>
+            <select id="sort-select" class="form-select text-sm" style="width: auto; padding: 0.4rem 0.75rem;">
+              <option value="name_asc">Name (A-Z)</option>
+              <option value="benefit_desc">Max Benefit (Highest)</option>
+            </select>
+          </div>
+        </div>
+
+        <div id="schemes-grid" class="grid grid-cols-1 grid-cols-2 gap-4">
+          <!-- Populated by JS -->
+        </div>
+
+        <!-- Pagination -->
+        <div class="flex justify-center items-center gap-2" style="margin-top: 2.5rem;" id="pagination-controls">
+          <!-- Populated by JS -->
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <footer class="site-footer"></footer>
+
+  <script src="/assets/js/translations.js"></script>
+  <script src="/assets/js/i18n.js"></script>
+  <script src="/assets/js/api.js"></script>
+  <script src="/assets/js/auth.js"></script>
+  <script src="/assets/js/components.js"></script>
+  <script>
+    let currentPage = 1;
+
+    async function loadSchemes() {
+      const grid = document.getElementById('schemes-grid');
+      const countEl = document.getElementById('results-count');
+      grid.innerHTML = '<div class="card" style="grid-column: 1/-1; text-align: center; padding: 3rem;"><div class="spinner" style="margin: 0 auto 1rem; border-color: var(--color-action);"></div><p class="text-muted">Loading schemes...</p></div>';
+
+      const search = document.getElementById('search-input').value.trim();
+      const level = document.querySelector('input[name="level"]:checked')?.value || '';
+      const category = document.getElementById('category-select').value;
+      const state = document.getElementById('state-select').value;
+
+      const params = new URLSearchParams({
+        page: currentPage,
+        per_page: 8,
+      });
+      if (search) params.append('q', search);
+      if (level) params.append('level', level);
+      if (category) params.append('category', category);
+      if (state) params.append('state', state);
+
+      try {
+        const res = await window.api.get(`/schemes?${params.toString()}`);
+        const items = res.data || [];
+        const meta = res.meta || { total: items.length, pages: 1 };
+
+        countEl.textContent = `Found ${meta.total} scheme${meta.total === 1 ? '' : 's'}`;
+
+        if (items.length === 0) {
+          grid.innerHTML = `
+            <div class="card" style="grid-column: 1/-1; text-align: center; padding: 3rem;">
+              <p style="font-size: 1.1rem; margin-bottom: 0.5rem;">No schemes matched your filters.</p>
+              <p class="text-sm text-muted">Try clearing some filter criteria or search with a different keyword.</p>
+            </div>
+          `;
+          document.getElementById('pagination-controls').innerHTML = '';
+          return;
+        }
+
+        grid.innerHTML = items.map(s => `
+          <div class="card flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between" style="margin-bottom: 0.65rem;">
+                <span class="badge badge-category">${(s.categories && s.categories[0]) || s.level}</span>
+                <span class="badge ${s.verification_status === 'verified' ? 'badge-verified' : 'badge-demo'}">
+                  ${s.verification_status.toUpperCase()}
+                </span>
+              </div>
+              <h3 style="font-size: 1.2rem; margin-bottom: 0.5rem; line-height: 1.3;">
+                <a href="/scheme.html?slug=${s.slug}" style="color: var(--color-heading);">${s.name}</a>
+              </h3>
+              <p class="text-sm text-muted" style="line-height: 1.5; margin-bottom: 1rem;">
+                ${s.description ? s.description.slice(0, 130) + '...' : ''}
+              </p>
+            </div>
+            <div>
+              <div style="font-size: var(--text-xs); color: var(--color-text-muted); margin-bottom: 1rem;">
+                Max Benefit: <strong>${window.formatCurrency(s.max_benefit_amount)}</strong>
+                ${s.state ? ` &bull; State: <strong>${s.state}</strong>` : ' &bull; Central'}
+              </div>
+              <div class="flex gap-2">
+                <a href="/scheme.html?slug=${s.slug}" class="btn btn-secondary btn-sm" style="flex: 1;">Details</a>
+                <a href="/app/eligibility.html?scheme=${s.slug}" class="btn btn-primary btn-sm" style="flex: 1;">Check Eligibility</a>
+              </div>
+            </div>
+          </div>
+        `).join('');
+
+        // Render pagination
+        renderPagination(meta);
+      } catch (err) {
+        grid.innerHTML = '<p class="text-muted" style="grid-column: 1/-1;">Error loading schemes. Please check backend connection.</p>';
+      }
+    }
+
+    function renderPagination(meta) {
+      const container = document.getElementById('pagination-controls');
+      if (meta.pages <= 1) {
+        container.innerHTML = '';
+        return;
+      }
+      container.innerHTML = `
+        <button class="btn btn-secondary btn-sm" ${currentPage <= 1 ? 'disabled' : ''} onclick="goToPage(${currentPage - 1})">Previous</button>
+        <span class="text-sm font-semibold" style="padding: 0 0.5rem;">Page ${currentPage} of ${meta.pages}</span>
+        <button class="btn btn-secondary btn-sm" ${currentPage >= meta.pages ? 'disabled' : ''} onclick="goToPage(${currentPage + 1})">Next</button>
+      `;
+    }
+
+    function goToPage(page) {
+      currentPage = page;
+      loadSchemes();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      window.renderNavbar('explore');
+      window.renderFooter();
+
+      // Read URL params if query provided from hero
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get('q')) {
+        document.getElementById('search-input').value = urlParams.get('q');
+      }
+      if (urlParams.get('category')) {
+        document.getElementById('category-select').value = urlParams.get('category');
+      }
+
+      loadSchemes();
+
+      // Event listeners
+      document.getElementById('search-input').addEventListener('input', () => {
+        currentPage = 1;
+        loadSchemes();
+      });
+      document.querySelectorAll('input[name="level"]').forEach(r => {
+        r.addEventListener('change', () => { currentPage = 1; loadSchemes(); });
+      });
+      document.getElementById('category-select').addEventListener('change', () => {
+        currentPage = 1; loadSchemes();
+      });
+      document.getElementById('state-select').addEventListener('change', () => {
+        currentPage = 1; loadSchemes();
+      });
+      document.getElementById('reset-filters').addEventListener('click', () => {
+        document.getElementById('search-input').value = '';
+        document.querySelector('input[name="level"][value=""]').checked = true;
+        document.getElementById('category-select').value = '';
+        document.getElementById('state-select').value = '';
+        currentPage = 1;
+        loadSchemes();
+      });
+    });
+  </script>
+</body>
+</html>

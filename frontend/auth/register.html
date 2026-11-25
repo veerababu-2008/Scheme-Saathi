@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Register — SchemeSaathi AI</title>
+  <link rel="stylesheet" href="/assets/css/tokens.css">
+  <link rel="stylesheet" href="/assets/css/base.css">
+  <link rel="stylesheet" href="/assets/css/components.css">
+  <link rel="stylesheet" href="/assets/css/navbar.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400..700;1,9..40,400..700&family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Manrope:wght@400..800&display=swap" rel="stylesheet">
+  <style>
+    .auth-page {
+      min-height: calc(100vh - 180px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 3rem 1.5rem;
+    }
+    .auth-card {
+      width: 100%;
+      max-width: 440px;
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-xl);
+      padding: 2.5rem;
+      box-shadow: var(--shadow-md);
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header"></header>
+
+  <main class="auth-page">
+    <div class="auth-card">
+      <div style="text-align: center; margin-bottom: 2rem;">
+        <h1 style="font-size: 1.75rem; margin-bottom: 0.5rem;">Citizen Registration</h1>
+        <p class="text-sm text-muted">Create an account to track benefits and personalized recommendations.</p>
+      </div>
+
+      <form id="register-form">
+        <div class="form-group">
+          <label class="form-label" for="full_name">Full Name</label>
+          <input type="text" id="full_name" class="form-input" placeholder="e.g. Ramesh Kumar" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="email">Email Address</label>
+          <input type="email" id="email" class="form-input" placeholder="e.g. ramesh@example.com" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="password">Password (min 8 characters)</label>
+          <input type="password" id="password" class="form-input" minlength="8" placeholder="Create a secure password" required>
+        </div>
+
+        <button type="submit" id="submit-btn" class="btn btn-primary btn-lg" style="width: 100%; margin-top: 0.5rem;">
+          Create Free Account
+        </button>
+      </form>
+
+      <div style="text-align: center; margin-top: 1.5rem; font-size: var(--text-sm);">
+        Already have an account? <a href="/auth/login.html" class="font-semibold">Sign in</a>
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer"></footer>
+
+  <script src="/assets/js/translations.js"></script>
+  <script src="/assets/js/i18n.js"></script>
+  <script src="/assets/js/api.js"></script>
+  <script src="/assets/js/auth.js"></script>
+  <script src="/assets/js/components.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      window.renderNavbar('');
+      window.renderFooter();
+
+      document.getElementById('register-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const btn = document.getElementById('submit-btn');
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner"></span> Creating account...';
+
+        const full_name = document.getElementById('full_name').value.trim();
+        const email = document.getElementById('email').value.trim();
+        const password = document.getElementById('password').value;
+
+        try {
+          await window.auth.register(email, password, full_name);
+          window.showToast('Account created successfully!', 'success');
+          setTimeout(() => window.location.href = '/app/dashboard.html', 500);
+        } catch (err) {
+          btn.disabled = false;
+          btn.textContent = 'Create Free Account';
+        }
+      });
+    });
+  </script>
+</body>
+</html>

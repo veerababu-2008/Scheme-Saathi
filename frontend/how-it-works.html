@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>How It Works — SchemeSaathi AI</title>
+  <link rel="stylesheet" href="/assets/css/tokens.css">
+  <link rel="stylesheet" href="/assets/css/base.css">
+  <link rel="stylesheet" href="/assets/css/components.css">
+  <link rel="stylesheet" href="/assets/css/navbar.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400..700;1,9..40,400..700&family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Manrope:wght@400..800&family=Noto+Sans+Devanagari:wght@400;600;700&family=Noto+Sans+Telugu:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <header class="site-header"></header>
+
+  <main class="container-narrow" style="padding: 4rem 1.5rem 6rem;">
+    <h1 style="font-size: 2.5rem; margin-bottom: 1rem;">How SchemeSaathi Works</h1>
+    <p class="text-muted" style="font-size: 1.15rem; line-height: 1.6; margin-bottom: 3rem;">
+      SchemeSaathi AI bridges the gap between Indian citizens and complex social welfare guidelines through transparent, deterministic rules and conversational AI assistance.
+    </p>
+
+    <div style="display: flex; flex-direction: column; gap: 2rem;">
+      <div class="card">
+        <h2 style="font-size: 1.4rem; color: var(--color-heading); margin-bottom: 0.75rem;">1. Deterministic Rule Engine</h2>
+        <p style="font-size: 0.95rem; line-height: 1.6; color: var(--color-text); margin-bottom: 0.5rem;">
+          Unlike opaque AI models that hallucinate eligibility, SchemeSaathi evaluates citizen data against official eligibility rules using boolean logic trees (AND, OR, NOT) with precise operators (greater than, less than, in list).
+        </p>
+        <div class="flex gap-2" style="margin-top: 1rem;">
+          <span class="badge badge-green">GREEN: Eligible</span>
+          <span class="badge badge-amber">AMBER: Missing Info / Discretionary</span>
+          <span class="badge badge-red">RED: Disqualified</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2 style="font-size: 1.4rem; color: var(--color-heading); margin-bottom: 0.75rem;">2. RAG-Powered Conversational AI</h2>
+        <p style="font-size: 0.95rem; line-height: 1.6; color: var(--color-text);">
+          Saathi AI retrieves knowledge chunks from official government gazettes, department portals, and verified scheme guidelines. When Saathi answers, every claim is anchored with a source citation.
+        </p>
+      </div>
+
+      <div class="card">
+        <h2 style="font-size: 1.4rem; color: var(--color-heading); margin-bottom: 0.75rem;">3. Privacy First — No Sensitive Identity Storage</h2>
+        <p style="font-size: 0.95rem; line-height: 1.6; color: var(--color-text);">
+          SchemeSaathi does not collect or store Aadhaar numbers, PAN cards, or biometric data. We only process non-sensitive demographic parameters (age, gender, state, land holding, income slab) necessary to evaluate welfare schemes.
+        </p>
+      </div>
+
+      <div class="card">
+        <h2 style="font-size: 1.4rem; color: var(--color-heading); margin-bottom: 0.75rem;">4. Document Readiness Checklist</h2>
+        <p style="font-size: 0.95rem; line-height: 1.6; color: var(--color-text);">
+          Before standing in lines at MeeSeva or CSC centres, citizens can review and check off required certificates with local language names (Telugu, Hindi, English).
+        </p>
+      </div>
+    </div>
+
+    <div style="margin-top: 3.5rem; text-align: center;">
+      <a href="/explore.html" class="btn btn-primary btn-lg">Explore Available Schemes Now →</a>
+    </div>
+  </main>
+
+  <footer class="site-footer"></footer>
+
+  <script src="/assets/js/translations.js"></script>
+  <script src="/assets/js/i18n.js"></script>
+  <script src="/assets/js/api.js"></script>
+  <script src="/assets/js/auth.js"></script>
+  <script src="/assets/js/components.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      window.renderNavbar('');
+      window.renderFooter();
+    });
+  </script>
+</body>
+</html>

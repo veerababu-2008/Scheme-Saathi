@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Check Scheme Eligibility — SchemeSaathi AI</title>
+  <link rel="stylesheet" href="/assets/css/tokens.css">
+  <link rel="stylesheet" href="/assets/css/base.css">
+  <link rel="stylesheet" href="/assets/css/components.css">
+  <link rel="stylesheet" href="/assets/css/navbar.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400..700;1,9..40,400..700&family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Manrope:wght@400..800&display=swap" rel="stylesheet">
+  <style>
+    .eval-layout {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr;
+      gap: 2.5rem;
+      padding: 2.5rem 0 5rem;
+    }
+    @media (max-width: 860px) {
+      .eval-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+    .verdict-box {
+      border-radius: var(--radius-lg);
+      padding: 2rem;
+      border: 2px solid transparent;
+      margin-bottom: 1.5rem;
+      text-align: center;
+    }
+    .verdict-green {
+      background: var(--jade-100);
+      border-color: var(--jade-600);
+      color: var(--jade-600);
+    }
+    .verdict-amber {
+      background: var(--amber-100);
+      border-color: var(--amber-700);
+      color: var(--amber-700);
+    }
+    .verdict-red {
+      background: var(--oxblood-100);
+      border-color: var(--oxblood-700);
+      color: var(--oxblood-700);
+    }
+    .rule-item {
+      padding: 0.75rem 1rem;
+      border-radius: var(--radius-md);
+      background: var(--parchment-50);
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.88rem;
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header"></header>
+
+  <main class="container">
+    <div style="padding-top: 2rem;">
+      <h1 style="font-size: 2.25rem; margin-bottom: 0.5rem;">Deterministic Eligibility Evaluation</h1>
+      <p class="text-sm text-muted">Test your profile parameters against official scheme criteria with zero hallucination.</p>
+    </div>
+
+    <div class="eval-layout">
+      <!-- Left: Form inputs -->
+      <section class="card">
+        <h2 style="font-size: 1.35rem; margin-bottom: 1.25rem;">Citizen Demographic Details</h2>
+        
+        <form id="eval-form">
+          <div class="form-group">
+            <label class="form-label" for="scheme-select">Select Welfare Scheme</label>
+            <select id="scheme-select" class="form-select" required>
+              <option value="">Loading schemes...</option>
+            </select>
+          </div>
+
+          <div class="grid grid-cols-2 gap-4">
+            <div class="form-group">
+              <label class="form-label" for="age">Age</label>
+              <input type="number" id="age" class="form-input" placeholder="e.g. 35" min="0" max="120" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="gender">Gender</label>
+              <select id="gender" class="form-select" required>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+                <option value="transgender">Transgender</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-4">
+            <div class="form-group">
+              <label class="form-label" for="state">State of Residence</label>
+              <select id="state" class="form-select" required>
+                <option value="Telangana">Telangana</option>
+                <option value="Andhra Pradesh">Andhra Pradesh</option>
+                <option value="Karnataka">Karnataka</option>
+                <option value="Maharashtra">Maharashtra</option>
+                <option value="Delhi">Delhi</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="income">Annual Family Income (₹)</label>
+              <input type="number" id="income" class="form-input" placeholder="e.g. 150000" min="0" required>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-4">
+            <div class="form-group">
+              <label class="form-label" for="occupation">Primary Occupation</label>
+              <select id="occupation" class="form-select">
+                <option value="farmer">Farmer / Cultivator</option>
+                <option value="agricultural_labourer">Agricultural Labourer</option>
+                <option value="street_vendor">Street Vendor</option>
+                <option value="student">Student</option>
+                <option value="unemployed">Unemployed / Job Seeker</option>
+                <option value="salaried">Salaried Employee</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="land_holding">Land Holding (Acres)</label>
+              <input type="number" step="0.1" id="land_holding" class="form-input" placeholder="0 if landless" value="0">
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-4">
+            <div class="form-group">
+              <label class="form-label" for="caste">Social Category (Caste)</label>
+              <select id="caste" class="form-select">
+                <option value="general">General</option>
+                <option value="obc">OBC</option>
+                <option value="sc">SC</option>
+                <option value="st">ST</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="disability">Persons with Disability (PwD)</label>
+              <select id="disability" class="form-select">
+                <option value="false">No</option>
+                <option value="true">Yes</option>
+              </select>
+            </div>
+          </div>
+
+          <button type="submit" id="evaluate-btn" class="btn btn-primary btn-lg" style="width: 100%; margin-top: 1rem;">
+            Run Rule Evaluator
+          </button>
+        </form>
+      </section>
+
+      <!-- Right: Evaluation Results -->
+      <section>
+        <div id="result-placeholder" class="card text-center" style="padding: 3rem;">
+          <p class="text-sm text-muted">Fill out the form and click <strong>Run Rule Evaluator</strong> to calculate your eligibility.</p>
+        </div>
+
+        <div id="result-display" style="display: none;">
+          <div id="verdict-banner" class="verdict-box">
+            <h2 id="verdict-title" style="font-size: 1.75rem; margin-bottom: 0.35rem;">ELIGIBLE</h2>
+            <p id="verdict-subtitle" class="text-sm">You satisfy all mandatory requirements for this scheme.</p>
+          </div>
+
+          <div class="card" style="margin-bottom: 1.5rem;">
+            <h3 style="font-size: 1.15rem; margin-bottom: 1rem;">Rule-by-Rule Breakdown</h3>
+            <div id="rules-breakdown-list">
+              <!-- Populated by JS -->
+            </div>
+          </div>
+
+          <div id="checklist-shortcut-card" class="card" style="display: none;">
+            <h3 style="font-size: 1.15rem; margin-bottom: 0.5rem;">Ready to Apply?</h3>
+            <p class="text-sm text-muted" style="margin-bottom: 1rem;">Prepare your certificates and track your readiness with the document checklist.</p>
+            <a id="checklist-link" href="#" class="btn btn-secondary btn-sm" style="width: 100%;">
+              Open Document Checklist →
+            </a>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <footer class="site-footer"></footer>
+
+  <script src="/assets/js/translations.js"></script>
+  <script src="/assets/js/i18n.js"></script>
+  <script src="/assets/js/api.js"></script>
+  <script src="/assets/js/auth.js"></script>
+  <script src="/assets/js/components.js"></script>
+  <script>
+    let schemesList = [];
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      window.renderNavbar('eligibility');
+      window.renderFooter();
+
+      // Pre-fill profile values if logged in
+      if (window.auth.isAuthenticated()) {
+        try {
+          const profRes = await window.api.get('/profile');
+          const p = profRes.data;
+          if (p.age) document.getElementById('age').value = p.age;
+          if (p.gender) document.getElementById('gender').value = p.gender;
+          if (p.state) document.getElementById('state').value = p.state;
+          if (p.annual_income) document.getElementById('income').value = p.annual_income;
+          if (p.occupation) document.getElementById('occupation').value = p.occupation;
+          if (p.land_holding_acres) document.getElementById('land_holding').value = p.land_holding_acres;
+          if (p.caste_category) document.getElementById('caste').value = p.caste_category;
+          if (p.is_disabled !== undefined) document.getElementById('disability').value = p.is_disabled ? 'true' : 'false';
+        } catch (err) {}
+      }
+
+      // Load schemes for select
+      try {
+        const res = await window.api.get('/schemes?per_page=50');
+        schemesList = res.data || [];
+        const select = document.getElementById('scheme-select');
+        select.innerHTML = '<option value="">-- Choose a scheme --</option>' + schemesList.map(s => `
+          <option value="${s.id}" data-slug="${s.slug}">${s.name} (${s.level.toUpperCase()})</option>
+        `).join('');
+
+        // Pre-select if passed in URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const targetSlug = urlParams.get('scheme');
+        if (targetSlug) {
+          const match = schemesList.find(s => s.slug === targetSlug);
+          if (match) select.value = match.id;
+        }
+      } catch (err) {}
+
+      // Handle evaluation form
+      document.getElementById('eval-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const btn = document.getElementById('evaluate-btn');
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner"></span> Evaluating Rules...';
+
+        const schemeId = parseInt(document.getElementById('scheme-select').value);
+        const profileData = {
+          age: parseInt(document.getElementById('age').value),
+          gender: document.getElementById('gender').value,
+          state: document.getElementById('state').value,
+          annual_income: parseInt(document.getElementById('income').value),
+          occupation: document.getElementById('occupation').value,
+          land_holding_acres: parseFloat(document.getElementById('land_holding').value || 0),
+          caste_category: document.getElementById('caste').value,
+          is_disabled: document.getElementById('disability').value === 'true',
+        };
+
+        try {
+          const res = await window.api.post('/eligibility/evaluate', {
+            scheme_id: schemeId,
+            profile: profileData,
+          });
+
+          displayResult(res.data, schemeId);
+        } catch (err) {
+          // Handled by api.js
+        } finally {
+          btn.disabled = false;
+          btn.textContent = 'Run Rule Evaluator';
+        }
+      });
+    });
+
+    function displayResult(result, schemeId) {
+      document.getElementById('result-placeholder').style.display = 'none';
+      const display = document.getElementById('result-display');
+      display.style.display = 'block';
+
+      const banner = document.getElementById('verdict-banner');
+      const title = document.getElementById('verdict-title');
+      const sub = document.getElementById('verdict-subtitle');
+
+      banner.className = `verdict-box verdict-${result.status.toLowerCase()}`;
+      if (result.status === 'green') {
+        title.textContent = 'POTENTIALLY ELIGIBLE';
+        sub.textContent = 'You satisfy all mandatory eligibility criteria for this scheme.';
+      } else if (result.status === 'amber') {
+        title.textContent = 'NEEDS VERIFICATION';
+        sub.textContent = 'Some discretionary or missing criteria need certificate confirmation.';
+      } else {
+        title.textContent = 'NOT ELIGIBLE';
+        sub.textContent = 'You do not meet one or more mandatory eligibility requirements.';
+      }
+
+      // Breakdown list
+      const listEl = document.getElementById('rules-breakdown-list');
+      const breakdown = result.breakdown || [];
+      if (breakdown.length === 0) {
+        listEl.innerHTML = '<p class="text-sm text-muted">All rules passed.</p>';
+      } else {
+        listEl.innerHTML = breakdown.map(r => `
+          <div class="rule-item">
+            <div>
+              <strong>${r.field ? r.field.replace(/_/g, ' ').toUpperCase() : 'Condition'}</strong>
+              <div class="text-xs text-muted">${r.description || r.operator || ''}</div>
+            </div>
+            <span class="badge ${r.passed ? 'badge-green' : (r.mandatory ? 'badge-red' : 'badge-amber')}">
+              ${r.passed ? 'PASSED' : (r.mandatory ? 'DISQUALIFIED' : 'WARNING')}
+            </span>
+          </div>
+        `).join('');
+      }
+
+      // Checklist shortcut
+      const scheme = schemesList.find(s => s.id === schemeId);
+      if (scheme) {
+        const link = document.getElementById('checklist-link');
+        link.href = `/app/checklist.html?scheme=${scheme.id}`;
+        document.getElementById('checklist-shortcut-card').style.display = 'block';
+      }
+    }
+  </script>
+</body>
+</html>
