@@ -9,6 +9,7 @@ from werkzeug.exceptions import HTTPException
 def create_app(config_name=None):
     """Create and configure the Flask application."""
     app = Flask(__name__)
+    app.url_map.strict_slashes = False
 
     config_name = config_name or os.getenv("FLASK_ENV", "development")
     from config import config_map

@@ -20,10 +20,12 @@ class SendMessageSchema(Schema):
     """Schema for POST /chat/sessions/<id>/messages."""
 
     message = fields.String(
-        required=True,
-        validate=[
-            validate.Length(min=1, max=2000),
-        ],
+        load_default=None,
+        validate=validate.Length(min=1, max=2000),
+    )
+    content = fields.String(
+        load_default=None,
+        validate=validate.Length(min=1, max=2000),
     )
     language = fields.String(
         load_default=None,

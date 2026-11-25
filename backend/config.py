@@ -15,7 +15,10 @@ class Config:
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
     # ── JWT ──────────────────────────────────────────────────────
-    JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY", "jwt-dev-secret-change-me")
+    JWT_SECRET_KEY = os.getenv(
+        "JWT_SECRET_KEY",
+        "schemesaathi-jwt-super-secret-key-for-development-and-testing-32-bytes",
+    )
     JWT_TOKEN_LOCATION = ["cookies"]
     JWT_COOKIE_SECURE = os.getenv("JWT_COOKIE_SECURE", "false").lower() == "true"
     JWT_COOKIE_SAMESITE = os.getenv("JWT_COOKIE_SAMESITE", "Lax")

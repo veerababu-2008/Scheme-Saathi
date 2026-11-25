@@ -111,7 +111,14 @@ def send_message(session_id):
         return error_response("VALIDATION_ERROR", "Invalid input.", errors, 400)
 
     data = schema.load(payload)
-    user_message_text = data["message"]
+    user_message_text = data.get("message") or data.get("content")
+    if not user_message_text or not str(user_message_text).strip():
+        return error_response(
+            "VALIDATION_ERROR",
+            "Message text cannot be empty.",
+            {"message": ["Field is required."]},
+            400,
+        )
 
     # Detect / override language
     from app.services.rag.prompt import detect_language
