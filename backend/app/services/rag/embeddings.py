@@ -89,7 +89,7 @@ def embed_chunks(
         )
         embeddings = result["embedding"]
 
-        for chunk, emb in zip(batch, embeddings):
+        for chunk, emb in zip(batch, embeddings, strict=False):
             chunk.embedding = emb
 
         logger.info(

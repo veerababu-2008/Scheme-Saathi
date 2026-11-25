@@ -90,7 +90,7 @@ class VectorStore:
         scores, indices = self.index.search(q, fetch_k)
 
         results = []
-        for score, idx in zip(scores[0], indices[0]):
+        for score, idx in zip(scores[0], indices[0], strict=False):
             if idx == -1:
                 continue
             meta = self.metadata[idx]

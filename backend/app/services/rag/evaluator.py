@@ -120,11 +120,11 @@ def run_rag_evaluation(dataset_path: str | None = None, output_report_path: str 
         "hit_at_5": round(hit_5 / total_questions, 4),
         "avg_latency_ms": round(avg_latency_ms, 2),
         "by_language": {
-            l: {
+            lang_code: {
                 "total": data["total"],
                 "hit_at_3": round(data["hits"] / data["total"], 4) if data["total"] else 0,
             }
-            for l, data in lang_stats.items()
+            for lang_code, data in lang_stats.items()
         },
     }
 

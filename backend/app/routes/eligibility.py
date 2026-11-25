@@ -91,7 +91,7 @@ def evaluate():
             )
             db.session.add(check)
             db.session.commit()
-        except Exception:  # noqa: BLE001
+        except Exception:
             db.session.rollback()
 
     return success_response({

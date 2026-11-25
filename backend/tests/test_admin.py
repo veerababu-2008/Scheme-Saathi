@@ -175,7 +175,7 @@ class TestAdminSchemeCRUD:
         audit_resp = client.get("/api/v1/admin/audit-logs?type=scheme")
         assert audit_resp.status_code == 200
         logs = audit_resp.get_json()["data"]
-        assert any(l["action"] == "create_scheme" for l in logs)
+        assert any(log["action"] == "create_scheme" for log in logs)
 
     def test_create_scheme_duplicate_slug(self, client, admin_users, seeded_schemes):
         login_admin(client, "editor@schemesaathi.in", "EditorSecret123!")

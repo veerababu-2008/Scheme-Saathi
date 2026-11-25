@@ -57,7 +57,7 @@ def search_schemes():
     q = params["q"]
 
     query = Scheme.query.filter(
-        Scheme.is_active == True,
+        Scheme.is_active,
         db.or_(
             Scheme.name.ilike(f"%{q}%"),
             Scheme.name_te.ilike(f"%{q}%"),
@@ -83,7 +83,7 @@ def list_categories():
             db.func.count(SchemeCategory.id).label("count"),
         )
         .join(Scheme, SchemeCategory.scheme_id == Scheme.id)
-        .filter(Scheme.is_active == True)
+        .filter(Scheme.is_active)
         .group_by(SchemeCategory.category)
         .order_by(db.func.count(SchemeCategory.id).desc())
         .all()
@@ -106,7 +106,7 @@ def scheme_stats():
     category_count = (
         db.session.query(SchemeCategory.category)
         .join(Scheme)
-        .filter(Scheme.is_active == True)
+        .filter(Scheme.is_active)
         .distinct()
         .count()
     )

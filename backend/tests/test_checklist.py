@@ -21,7 +21,7 @@ def _seed_scheme_with_docs(app, slug="checklist-scheme"):
         _db.session.flush()
 
         doc_ids = []
-        for i, (name, mandatory) in enumerate([
+        for _i, (name, mandatory) in enumerate([
             ("Aadhaar Card", True),
             ("Income Certificate", True),
             ("Passport Photo", False),

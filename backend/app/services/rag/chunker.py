@@ -64,7 +64,7 @@ def _split_at_headings(text: str) -> list[str]:
     if parts and parts[0].strip():
         result.append(parts[0].strip())
 
-    for marker, body in zip(markers, parts[1:]):
+    for marker, body in zip(markers, parts[1:], strict=False):
         combined = (marker + body).strip()
         if combined:
             result.append(combined)

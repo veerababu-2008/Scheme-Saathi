@@ -172,7 +172,7 @@ def send_message(session_id):
         from app.services.gemini_client import generate_chat_response
 
         answer = generate_chat_response(messages, SYSTEM_PROMPT)
-    except Exception:  # noqa: BLE001
+    except Exception:
         answer = build_fallback_response(language)
 
     # 5. Validate response
