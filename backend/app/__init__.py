@@ -37,7 +37,10 @@ def _init_extensions(app):
 
     limiter.init_app(app)
 
-    origins = os.getenv("CORS_ORIGINS", "http://localhost:3000").split(",")
+    origins = os.getenv(
+        "CORS_ORIGINS",
+        "http://localhost:3000,http://127.0.0.1:3000,http://localhost:5500,http://127.0.0.1:5500",
+    ).split(",")
     cors.init_app(app, origins=origins, supports_credentials=True)
 
 

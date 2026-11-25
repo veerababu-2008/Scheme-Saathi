@@ -4,8 +4,15 @@
  */
 
 const API_BASE = window.location.origin.includes(':3000') || window.location.origin.includes(':5500')
-  ? 'http://127.0.0.1:5000/api/v1'
+  ? `http://${window.location.hostname}:5000/api/v1`
   : '/api/v1';
+
+function getCookie(name) {
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; ${name}=`);
+  if (parts.length === 2) return parts.pop().split(';').shift();
+  return null;
+}
 
 class ApiClient {
   async request(endpoint, options = {}) {
@@ -15,6 +22,16 @@ class ApiClient {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
     };
+
+    const method = (options.method || 'GET').toUpperCase();
+    if (['POST', 'PUT', 'PATCH', 'DELETE'].includes(method)) {
+      const csrfToken = endpoint.includes('/auth/refresh')
+        ? getCookie('csrf_refresh_token')
+        : getCookie('csrf_access_token');
+      if (csrfToken) {
+        defaultHeaders['X-CSRF-TOKEN'] = csrfToken;
+      }
+    }
 
     const config = {
       ...options,
