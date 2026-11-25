@@ -29,11 +29,12 @@ auth_bp = Blueprint("auth", __name__)
 @limiter.limit("5/minute")
 def register():
     schema = RegisterSchema()
-    errors = schema.validate(request.json or {})
+    payload = request.get_json(silent=True) or {}
+    errors = schema.validate(payload)
     if errors:
         return error_response("VALIDATION_ERROR", "Invalid input.", errors, 400)
 
-    data = schema.load(request.json)
+    data = schema.load(payload)
 
     if User.query.filter_by(email=data["email"]).first():
         return error_response("CONFLICT", "Email already registered.", status=409)
@@ -65,11 +66,12 @@ def register():
 @limiter.limit("5/minute")
 def login():
     schema = LoginSchema()
-    errors = schema.validate(request.json or {})
+    payload = request.get_json(silent=True) or {}
+    errors = schema.validate(payload)
     if errors:
         return error_response("VALIDATION_ERROR", "Invalid input.", errors, 400)
 
-    data = schema.load(request.json)
+    data = schema.load(payload)
     user = User.query.filter_by(email=data["email"]).first()
 
     if not user or not user.is_active or not user.check_password(data["password"]):
@@ -130,11 +132,12 @@ def refresh():
 @limiter.limit("5/minute")
 def change_password():
     schema = PasswordChangeSchema()
-    errors = schema.validate(request.json or {})
+    payload = request.get_json(silent=True) or {}
+    errors = schema.validate(payload)
     if errors:
         return error_response("VALIDATION_ERROR", "Invalid input.", errors, 400)
 
-    data = schema.load(request.json)
+    data = schema.load(payload)
     user = db.session.get(User, int(get_jwt_identity()))
 
     if not user or not user.check_password(data["current_password"]):

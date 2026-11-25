@@ -182,6 +182,9 @@ def check_all():
 
     # Optional filters
     schema = CheckAllQuerySchema()
+    errors = schema.validate(request.args)
+    if errors:
+        return error_response("VALIDATION_ERROR", "Invalid parameters.", errors, 400)
     params = schema.load(request.args)
 
     query = Scheme.query.filter_by(is_active=True)

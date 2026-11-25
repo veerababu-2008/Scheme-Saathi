@@ -95,11 +95,12 @@ def update_document_status(scheme_id, document_id):
         return error_response("NOT_FOUND", "Document not found.", status=404)
 
     schema = UpdateChecklistSchema()
-    errors = schema.validate(request.get_json(silent=True) or {})
+    payload = request.get_json(silent=True) or {}
+    errors = schema.validate(payload)
     if errors:
         return error_response("VALIDATION_ERROR", "Invalid input.", errors, 400)
 
-    data = schema.load(request.get_json())
+    data = schema.load(payload)
 
     progress = ChecklistProgress.query.filter_by(
         user_id=user_id, scheme_id=scheme_id, document_id=document_id

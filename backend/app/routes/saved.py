@@ -27,11 +27,12 @@ saved_bp = Blueprint("saved", __name__)
 def save_scheme():
     """Bookmark a scheme."""
     schema = SaveSchemeSchema()
-    errors = schema.validate(request.get_json(silent=True) or {})
+    payload = request.get_json(silent=True) or {}
+    errors = schema.validate(payload)
     if errors:
         return error_response("VALIDATION_ERROR", "Invalid input.", errors, 400)
 
-    data = schema.load(request.get_json())
+    data = schema.load(payload)
     user_id = int(get_jwt_identity())
 
     scheme = Scheme.query.filter_by(id=data["scheme_id"], is_active=True).first()
@@ -72,6 +73,9 @@ def list_saved():
     """List the authenticated user's bookmarked schemes."""
     user_id = int(get_jwt_identity())
     schema = SavedListSchema()
+    errors = schema.validate(request.args)
+    if errors:
+        return error_response("VALIDATION_ERROR", "Invalid parameters.", errors, 400)
     params = schema.load(request.args)
 
     query = (
@@ -104,11 +108,12 @@ def update_notes(saved_id):
         return error_response("NOT_FOUND", "Bookmark not found.", status=404)
 
     schema = UpdateNotesSchema()
-    errors = schema.validate(request.get_json(silent=True) or {})
+    payload = request.get_json(silent=True) or {}
+    errors = schema.validate(payload)
     if errors:
         return error_response("VALIDATION_ERROR", "Invalid input.", errors, 400)
 
-    data = schema.load(request.get_json())
+    data = schema.load(payload)
     saved.notes = data["notes"]
     db.session.commit()
 

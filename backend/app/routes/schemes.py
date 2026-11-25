@@ -72,18 +72,6 @@ def search_schemes():
     return success_response([s.to_list_dict() for s in items], meta)
 
 
-# ── GET /:slug ───────────────────────────────────────────────────
-
-
-@schemes_bp.route("/<string:slug>", methods=["GET"])
-def get_scheme(slug):
-    scheme = Scheme.query.filter_by(slug=slug, is_active=True).first()
-    if not scheme:
-        return error_response("NOT_FOUND", "Scheme not found.", status=404)
-
-    return success_response(scheme.to_dict(include_rules=True))
-
-
 # ── GET /categories ──────────────────────────────────────────────
 
 
@@ -151,3 +139,15 @@ def featured_schemes():
         .all()
     )
     return success_response([s.to_list_dict() for s in schemes])
+
+
+# ── GET /:slug ───────────────────────────────────────────────────
+
+
+@schemes_bp.route("/<string:slug>", methods=["GET"])
+def get_scheme(slug):
+    scheme = Scheme.query.filter_by(slug=slug, is_active=True).first()
+    if not scheme:
+        return error_response("NOT_FOUND", "Scheme not found.", status=404)
+
+    return success_response(scheme.to_dict(include_rules=True))

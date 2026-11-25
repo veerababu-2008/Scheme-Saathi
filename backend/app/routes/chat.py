@@ -31,7 +31,12 @@ chat_bp = Blueprint("chat", __name__)
 def create_session():
     """Create a new chat session."""
     schema = CreateSessionSchema()
-    data = schema.load(request.get_json(silent=True) or {})
+    payload = request.get_json(silent=True) or {}
+    errors = schema.validate(payload)
+    if errors:
+        return error_response("VALIDATION_ERROR", "Invalid input.", errors, 400)
+
+    data = schema.load(payload)
 
     user_id = int(get_jwt_identity())
     session = ChatSession(
@@ -54,6 +59,9 @@ def list_sessions():
     """List the authenticated user's chat sessions."""
     user_id = int(get_jwt_identity())
     schema = SessionListSchema()
+    errors = schema.validate(request.args)
+    if errors:
+        return error_response("VALIDATION_ERROR", "Invalid parameters.", errors, 400)
     params = schema.load(request.args)
 
     query = (

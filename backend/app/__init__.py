@@ -72,6 +72,23 @@ def _register_blueprints(app):
 
 
 def _register_error_handlers(app):
+    from marshmallow import ValidationError
+
+    @app.errorhandler(ValidationError)
+    def handle_validation_error(exc):
+        return (
+            jsonify(
+                data=None,
+                meta=None,
+                error={
+                    "code": "VALIDATION_ERROR",
+                    "message": "Invalid input.",
+                    "details": exc.messages,
+                },
+            ),
+            400,
+        )
+
     @app.errorhandler(HTTPException)
     def handle_http_error(exc):
         return (

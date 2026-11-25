@@ -26,11 +26,12 @@ feedback_bp = Blueprint("feedback", __name__)
 def submit_feedback():
     """Submit a feedback entry (bug, suggestion, or correction)."""
     schema = SubmitFeedbackSchema()
-    errors = schema.validate(request.get_json(silent=True) or {})
+    payload = request.get_json(silent=True) or {}
+    errors = schema.validate(payload)
     if errors:
         return error_response("VALIDATION_ERROR", "Invalid input.", errors, 400)
 
-    data = schema.load(request.get_json())
+    data = schema.load(payload)
     user_id = int(get_jwt_identity())
 
     # Validate scheme_id if provided
@@ -62,6 +63,9 @@ def list_feedback():
     """List the authenticated user's feedback entries."""
     user_id = int(get_jwt_identity())
     schema = FeedbackListSchema()
+    errors = schema.validate(request.args)
+    if errors:
+        return error_response("VALIDATION_ERROR", "Invalid parameters.", errors, 400)
     params = schema.load(request.args)
 
     query = Feedback.query.filter_by(user_id=user_id)

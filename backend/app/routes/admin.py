@@ -106,11 +106,12 @@ def log_audit(admin_id, action, entity_type, entity_id=None, diff_json=None):
 @admin_bp.route("/login", methods=["POST"])
 def admin_login():
     schema = AdminLoginSchema()
-    errors = schema.validate(request.get_json(silent=True) or {})
+    payload = request.get_json(silent=True) or {}
+    errors = schema.validate(payload)
     if errors:
         return error_response("VALIDATION_ERROR", "Invalid input.", errors, 400)
 
-    data = schema.load(request.get_json())
+    data = schema.load(payload)
     admin = AdminUser.query.filter_by(email=data["email"]).first()
     if not admin or not admin.is_active or not admin.check_password(data["password"]):
         return error_response(
@@ -140,6 +141,9 @@ def admin_me():
 @admin_required()
 def admin_list_schemes():
     schema = AdminListQuerySchema()
+    errors = schema.validate(request.args)
+    if errors:
+        return error_response("VALIDATION_ERROR", "Invalid query parameters.", errors, 400)
     args = schema.load(request.args)
     q = Scheme.query
 
@@ -165,11 +169,12 @@ def admin_list_schemes():
 @admin_required(roles=["super", "editor"])
 def admin_create_scheme():
     schema = AdminSchemeCreateSchema()
-    errors = schema.validate(request.get_json(silent=True) or {})
+    payload = request.get_json(silent=True) or {}
+    errors = schema.validate(payload)
     if errors:
         return error_response("VALIDATION_ERROR", "Invalid scheme data.", errors, 400)
 
-    data = schema.load(request.get_json())
+    data = schema.load(payload)
     slug = data.get("slug") or re.sub(r"[^a-z0-9]+", "-", data["name"].lower()).strip("-")
     if Scheme.query.filter_by(slug=slug).first():
         return error_response("CONFLICT", f"Slug '{slug}' already exists.", status=409)
@@ -241,11 +246,12 @@ def admin_update_scheme(scheme_id):
         return error_response("NOT_FOUND", "Scheme not found.", status=404)
 
     schema = AdminSchemeUpdateSchema()
-    errors = schema.validate(request.get_json(silent=True) or {})
+    payload = request.get_json(silent=True) or {}
+    errors = schema.validate(payload)
     if errors:
         return error_response("VALIDATION_ERROR", "Invalid update payload.", errors, 400)
 
-    data = schema.load(request.get_json())
+    data = schema.load(payload)
     diff = {}
     for key, value in data.items():
         if key == "categories":
@@ -308,11 +314,12 @@ def admin_create_rule(scheme_id):
         return error_response("NOT_FOUND", "Scheme not found.", status=404)
 
     schema = AdminRuleCreateSchema()
-    errors = schema.validate(request.get_json(silent=True) or {})
+    payload = request.get_json(silent=True) or {}
+    errors = schema.validate(payload)
     if errors:
         return error_response("VALIDATION_ERROR", "Invalid rule data.", errors, 400)
 
-    data = schema.load(request.get_json())
+    data = schema.load(payload)
     # Deactivate prior rules
     EligibilityRule.query.filter_by(scheme_id=scheme_id).update({"is_active": False})
 
@@ -351,6 +358,9 @@ def admin_create_rule(scheme_id):
 @admin_required()
 def admin_list_feedback():
     schema = AdminListQuerySchema()
+    errors = schema.validate(request.args)
+    if errors:
+        return error_response("VALIDATION_ERROR", "Invalid query parameters.", errors, 400)
     args = schema.load(request.args)
     q = Feedback.query
 
@@ -373,11 +383,12 @@ def admin_update_feedback(feedback_id):
         return error_response("NOT_FOUND", "Feedback not found.", status=404)
 
     schema = AdminFeedbackUpdateSchema()
-    errors = schema.validate(request.get_json(silent=True) or {})
+    payload = request.get_json(silent=True) or {}
+    errors = schema.validate(payload)
     if errors:
         return error_response("VALIDATION_ERROR", "Invalid status.", errors, 400)
 
-    data = schema.load(request.get_json())
+    data = schema.load(payload)
     old_status = fb.status
     fb.status = data["status"]
 
@@ -399,6 +410,9 @@ def admin_update_feedback(feedback_id):
 @admin_required()
 def admin_list_audit_logs():
     schema = AdminListQuerySchema()
+    errors = schema.validate(request.args)
+    if errors:
+        return error_response("VALIDATION_ERROR", "Invalid query parameters.", errors, 400)
     args = schema.load(request.args)
     q = AuditLog.query
 

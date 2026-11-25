@@ -35,11 +35,12 @@ def get_profile():
 @jwt_required()
 def update_profile():
     schema = ProfileUpdateSchema()
-    errors = schema.validate(request.json or {})
+    payload = request.get_json(silent=True) or {}
+    errors = schema.validate(payload)
     if errors:
         return error_response("VALIDATION_ERROR", "Invalid input.", errors, 400)
 
-    data = schema.load(request.json)
+    data = schema.load(payload)
     user = db.session.get(User, int(get_jwt_identity()))
     if not user or not user.is_active:
         return error_response("NOT_FOUND", "User not found.", status=404)
